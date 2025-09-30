@@ -8,7 +8,7 @@ using WebBuySource.Uow;
 var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
-
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
 //connect db 
 //var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DBCon");
 
@@ -29,19 +29,21 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 
 /// cors
 #region
-builder.Services.AddCors(options =>
+builder.Services.AddCors(opt =>
 {
-    options.AddPolicy("MyCorsPolicy", policy =>
+    opt.AddPolicy("MyCorsPolicy", policy =>
     {
-        policy
-            .WithOrigins("http://localhost:3000")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
+        policy.WithOrigins(allowedOrigins)
+              .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+              .WithHeaders("Authorization", "Content-Type", "X-Request-Id")
+              .WithExposedHeaders("X-Pagination")
+              .DisallowCredentials(); // Tránh kết hợp credentials + nhiều origin
     });
 });
 #endregion
@@ -68,8 +70,11 @@ if (app.Environment.IsDevelopment())
 }
 #endregion
 
-
-
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+app.UseHsts(); // HTTP Strict Transport Security
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
