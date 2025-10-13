@@ -13,7 +13,7 @@ namespace WebBuySource.Data.Configurations
             builder.HasData(
              new Role
              {
-                 Id = 8,
+                 Id = 1,
                  Name = "User",
                  Description = "Regular system user",
                  CreatedAt = new DateTime(2025, 09, 29, 0, 0, 0, DateTimeKind.Utc),
@@ -21,7 +21,7 @@ namespace WebBuySource.Data.Configurations
              },
              new Role
              {
-                 Id = 9,
+                 Id = 2,
                  Name = "Admin",
                  Description = "Administrator with delegated permissions",
                  CreatedAt = new DateTime(2025, 09, 29, 0, 0, 0, DateTimeKind.Utc),

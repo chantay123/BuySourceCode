@@ -11,18 +11,15 @@ namespace WebBuySource.Models
         [Key]
         public int Id { get; set; }
 
-        [Required, MaxLength(50)]
-        public string Username { get; set; }
+        public required string Username { get; set; }
+        public required string Fullname { get; set; }
 
         [Required, MaxLength(150)]
-        public string Fullname { get; set; }
+        public required string Email { get; set; }
 
-        [Required, MaxLength(150)]
-        public string Email { get; set; }
-
-        [Required]
-        public string Password { get; set; }
-
+        [MaxLength(100)]
+        public required string Password { get; set; }
+      
         public string? PhoneNumber { get; set; }
         public Gender? Gender { get; set; }
         public string? Avatar { get; set; }

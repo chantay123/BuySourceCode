@@ -1,5 +1,4 @@
 ﻿
-
 using WebBanNongSan.Dto.Request;
 using WebBanNongSan.Dto.Response;
 using WebBanNongSan.Dto.Response.CategoryResponse;
@@ -33,6 +32,8 @@ namespace WebBuySource.Services
                 Name = x.Name,
                 Description = x.Description,    
             });
+
+
             return BaseApiResponse.OK(result);
         }
 
