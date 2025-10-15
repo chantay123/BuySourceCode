@@ -1,9 +1,8 @@
-﻿namespace WebBuySource.Dto.Response
+﻿namespace WebBuySource.Dto.Request
 {
-    public class AuthResponseDTO
+    public class RefreshTokenRequestDTO
     {
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
-      
     }
 }

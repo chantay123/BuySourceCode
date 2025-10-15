@@ -3,13 +3,11 @@ using WebBanNongSan.Dto.Request;
 using WebBanNongSan.Dto.Response;
 using WebBuySource.Interfaces;
 
-
-
 namespace WebBuySource.Controllers
 {
 
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/category")]
 
     public class CategoryController : Controller
     {
@@ -21,7 +19,7 @@ namespace WebBuySource.Controllers
             _categoryService = categoryService;
         }
         #endregion
-
+         
         /// <returns></returns>
         /// <summary>
         /// Get Product .

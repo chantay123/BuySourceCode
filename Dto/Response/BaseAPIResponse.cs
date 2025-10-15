@@ -2,49 +2,84 @@
 
 namespace WebBanNongSan.Dto.Response
 {
+    /// <summary>
+    /// Base API response class used across the system.
+    /// </summary>
     public class BaseAPIResponse
     {
         /// <summary>
-        /// Process status: true:success | false: error
+        /// Process status: true = success, false = error
         /// </summary>
-        public bool? IsSuccess { get; set; }
+        [JsonPropertyName("success")]
+        public bool? Success { get; set; }
+
         /// <summary>
-        /// Process status code
+        /// HTTP or business status code
         /// </summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("statusCode")]
         public int? StatusCode { get; set; }
+
         /// <summary>
-        /// Process message code
+        /// Short message or code that identifies the message type
         /// </summary>
+        ///
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("msgCode")]
         public string MessageCode { get; set; }
+
         /// <summary>
-        /// Process message detail
+        /// Detailed message about the response (human-readable)
         /// </summary>
+        /// 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("msgDetail")]
         public string MessageDetail { get; set; }
+
         /// <summary>
-        /// Total records
+        /// Total number of records (optional)
         /// </summary>
+        /// 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("total")]
         public int? Total { get; set; }
+
         /// <summary>
-        /// Page size for mobile
+        /// Page size used in pagination (optional)
         /// </summary>
+        /// 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("pageSize")]
         public int? PageSize { get; set; }
+
         /// <summary>
-        /// Data response
+        /// Generic response data — now replaces 'Items'
         /// </summary>
+        /// 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("data")]
         public object Items { get; set; }
+
         /// <summary>
-        /// Gets or sets the total un read.
+        /// Total number of unread items (optional)
         /// </summary>
-        /// <value>
-        /// The total un read.
-        /// </value>
+        /// 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("totalUnRead")]
         public int? TotalUnRead { get; set; }
 
         /// <summary>
-        /// Is Warning messages
+        /// Indicates whether the response contains warnings
         /// </summary>
+        /// 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("isWarning")]
         public bool? IsWarning { get; set; }
+
+        /// <summary>
+        /// Timestamp of the response (optional)
+        /// </summary>
+        [JsonPropertyName("timestamp")]
+        public DateTime? Timestamp { get; set; } = DateTime.UtcNow;
     }
 }

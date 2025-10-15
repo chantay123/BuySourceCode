@@ -1,5 +1,4 @@
 ﻿
-
 using System.Collections;
 using WebBanNongSan.Dto.Response;
 
@@ -15,7 +14,7 @@ namespace WebBuySource.Utilities
         {
             return new BaseAPIResponse
             {
-                IsSuccess = true,
+                Success = true,
                 StatusCode = StatusCodes.Ok,
             };
         }
@@ -29,7 +28,7 @@ namespace WebBuySource.Utilities
         {
             return new BaseAPIResponse
             {
-                IsSuccess = true,
+                Success = true,
                 StatusCode = StatusCodes.Ok,
                 PageSize = pageSize
             };
@@ -49,7 +48,7 @@ namespace WebBuySource.Utilities
             }
             return new BaseAPIResponse
             {
-                IsSuccess = true,
+                Success = true,
                 StatusCode = StatusCodes.Ok,
                 Items = resData,
                 Total = totalRecord
@@ -66,7 +65,7 @@ namespace WebBuySource.Utilities
         {
             return new BaseAPIResponse
             {
-                IsSuccess = true,
+                Success = true,
                 StatusCode = StatusCodes.Ok,
                 Items = resData,
                 Total = totalRecord
@@ -84,7 +83,7 @@ namespace WebBuySource.Utilities
         {
             return new BaseAPIResponse
             {
-                IsSuccess = true,
+                Success = true,
                 StatusCode = StatusCodes.Ok,
                 Items = resData,
                 Total = totalRecord,
@@ -100,7 +99,7 @@ namespace WebBuySource.Utilities
         {
             return new BaseAPIResponse
             {
-                IsSuccess = false,
+                Success = false,
                 StatusCode = StatusCodes.BadRequest
             };
         }
@@ -114,7 +113,7 @@ namespace WebBuySource.Utilities
         {
             return new BaseAPIResponse
             {
-                IsSuccess = false,
+                Success = false,
                 StatusCode = StatusCodes.BadRequest,
                 MessageCode = msgCode
             };
@@ -136,7 +135,7 @@ namespace WebBuySource.Utilities
             }
             return new BaseAPIResponse
             {
-                IsSuccess = false,
+                Success = false,
                 StatusCode = StatusCodes.BadRequest,
                 MessageCode = msgCode,
                 MessageDetail = msgDetail,
@@ -153,7 +152,7 @@ namespace WebBuySource.Utilities
         {
             return new BaseAPIResponse
             {
-                IsSuccess = false,
+                Success = false,
                 StatusCode = StatusCodes.NotFound
             };
         }
@@ -167,7 +166,7 @@ namespace WebBuySource.Utilities
         {
             return new BaseAPIResponse
             {
-                IsSuccess = false,
+                Success = false,
                 StatusCode = StatusCodes.NotFound,
                 MessageCode = msgCode
             };
@@ -183,7 +182,7 @@ namespace WebBuySource.Utilities
         {
             return new BaseAPIResponse
             {
-                IsSuccess = false,
+                Success = false,
                 StatusCode = StatusCodes.NotFound,
                 MessageCode = msgCode,
                 MessageDetail = msgDetail
@@ -198,7 +197,7 @@ namespace WebBuySource.Utilities
         {
             return new BaseAPIResponse
             {
-                IsSuccess = false,
+                Success = false,
                 StatusCode = StatusCodes.BadRequest,
             };
         }
@@ -212,7 +211,7 @@ namespace WebBuySource.Utilities
         {
             return new BaseAPIResponse
             {
-                IsSuccess = false,
+                Success = false,
                 StatusCode = StatusCodes.BadRequest,
                 MessageCode = msgCode
             };
@@ -227,7 +226,7 @@ namespace WebBuySource.Utilities
         {
             return new BaseAPIResponse
             {
-                IsSuccess = false,
+                Success = false,
                 Items = resData,
                 IsWarning = true
             };
@@ -242,7 +241,7 @@ namespace WebBuySource.Utilities
         {
             return new BaseAPIResponse
             {
-                IsSuccess = false,
+                Success = false,
                 MessageCode = string.Join(",", msgCodes),
                 IsWarning = true
             };
@@ -257,7 +256,7 @@ namespace WebBuySource.Utilities
         {
             return new BaseAPIResponse
             {
-                IsSuccess = false,
+                Success = false,
                 Items = resData,
             };
         }
@@ -272,12 +271,26 @@ namespace WebBuySource.Utilities
         {
             return new BaseAPIResponse
             {
-                IsSuccess = true,
+                Success = true,
                 StatusCode = StatusCodes.Ok,
                 Items = resData,
                 Total = totalRecord,
                 TotalUnRead = totalUnRead
             };
         }
+
+        public static BaseAPIResponse OK(object resData , string message )
+        {
+            return new BaseAPIResponse
+            {
+                Success = true,
+                StatusCode = StatusCodes.Ok,
+                MessageCode = message,
+                Items = resData
+            };
+        }
+
+
+
     }
 }

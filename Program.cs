@@ -1,14 +1,21 @@
 ﻿using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using WebBuySource.Data;
 using WebBuySource.Interfaces;
 using WebBuySource.Services;
 using WebBuySource.Uow;
 
+
 var builder = WebApplication.CreateBuilder(args);
+
 
 Env.Load();
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+
+
 //connect db 
 //var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DBCon");
 
@@ -33,8 +40,33 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 
-/// cors
-#region
+
+
+// Add JWT Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+});
+
+builder.Services.AddAuthorization();
+
+
+///// cors
+//#region
 builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("MyCorsPolicy", policy =>
@@ -43,10 +75,10 @@ builder.Services.AddCors(opt =>
               .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
               .WithHeaders("Authorization", "Content-Type", "X-Request-Id")
               .WithExposedHeaders("X-Pagination")
-              .DisallowCredentials(); // Tránh kết hợp credentials + nhiều origin
+              .DisallowCredentials();
     });
 });
-#endregion
+//#endregion
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
@@ -85,7 +117,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllers();
 
