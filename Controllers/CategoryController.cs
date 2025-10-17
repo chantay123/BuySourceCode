@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebBanNongSan.Dto.Request;
-using WebBanNongSan.Dto.Response;
+using WebBuySource.Dto.Request;
+using WebBuySource.Dto.Response;
 using WebBuySource.Interfaces;
 
 namespace WebBuySource.Controllers

@@ -22,7 +22,13 @@
         public const string ACCESS_TOKEN_VALID = "Access token is still valid.";
         public const string NEW_ACCESS_TOKEN_ISSUED = "New access token has been issued successfully.";
 
-
+        //email
+        public const string EmailEmpty = "Email must not be empty.";
+        public const string OtpSentSuccess = "OTP has been sent to your email.";
+        public const string OtpSendFailed = "Failed to send OTP.";
+        public const string OtpExpiredOrMissing = "OTP has expired or does not exist.";
+        public const string OtpInvalid = "Invalid OTP code.";
+        public const string OtpVerified = "OTP verification successful.";
 
         // Category
         public const string CATEGORY_NOT_FOUND = "Category not found";

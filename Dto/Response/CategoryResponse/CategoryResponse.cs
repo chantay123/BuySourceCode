@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace WebBanNongSan.Dto.Response.CategoryResponse
+namespace WebBuySource.Dto.Response.CategoryResponse
 {
     public class CategoryResponse
     {

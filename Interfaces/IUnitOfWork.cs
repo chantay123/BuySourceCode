@@ -7,7 +7,6 @@ namespace WebBuySource.Interfaces
     {
         
         IRepository<Category> CategoryRepository { get; }
-
         IRepository<User> UserRepository { get; }
 
         bool Commit();
