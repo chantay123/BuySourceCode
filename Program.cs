@@ -36,10 +36,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IUserService , UserService >();
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
-
+// memmory cache
+builder.Services.AddMemoryCache();
 
 
 // Add JWT Authentication

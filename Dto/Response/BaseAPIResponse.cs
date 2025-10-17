@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace WebBanNongSan.Dto.Response
+namespace WebBuySource.Dto.Response
 {
     /// <summary>
     /// Base API response class used across the system.

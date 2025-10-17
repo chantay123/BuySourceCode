@@ -3,7 +3,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using WebBanNongSan.Dto.Response;
 using WebBuySource.Dto.Request;
 using WebBuySource.Dto.Response;
 using WebBuySource.Interfaces;
@@ -17,6 +16,7 @@ namespace WebBuySource.Services
     public class JwtService : BaseService, IJwtService
     {
         private static readonly Dictionary<string, string> RefreshTokens = new();
+
         #region Repository references
         /// <summary>
         /// Repository for accessing and managing user data.
@@ -52,7 +52,7 @@ namespace WebBuySource.Services
             //Hash the user's password using BCrypt
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
-          // Create a new user entity with default role = User
+          // Create a new user entity with default role 
             var newUser = new User
             {
                 Username = request.Email.Trim(),
@@ -77,9 +77,7 @@ namespace WebBuySource.Services
                 email = newUser.Email
             });
         }
-
-
-
+        
         /// <summary>
         /// Authenticates a user and generates a JWT token if credentials are valid.
         /// </summary>
@@ -114,7 +112,6 @@ namespace WebBuySource.Services
             }, MessageConstants.LOGIN_SUCCESS);
         }
 
-
         /// <summary>
         /// Generates a signed JWT access token for the authenticated user.
         /// </summary>
@@ -136,7 +133,7 @@ namespace WebBuySource.Services
                 new Claim(JwtRegisteredClaimNames.Sub, user.Username),
                 new Claim("id", user.Id.ToString()),
                 new Claim("name", user.Fullname.ToString()),
-                new Claim("role", "User"),
+              
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, iat.ToString(), ClaimValueTypes.Integer64),
                 new Claim(JwtRegisteredClaimNames.Exp, exp.ToString(), ClaimValueTypes.Integer64),
@@ -168,7 +165,6 @@ namespace WebBuySource.Services
             var jwtToken = handler.ReadJwtToken(request.AccessToken);
             var username = jwtToken?.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
             var expClaim = jwtToken?.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp)?.Value;
-
             string tokenStatusMessage = string.Empty;
 
             if (long.TryParse(expClaim, out var exp))

@@ -1,6 +1,6 @@
 ﻿
-using WebBanNongSan.Dto.Request;
-using WebBanNongSan.Dto.Response;
+using WebBuySource.Dto.Request;
+using WebBuySource.Dto.Response;
 
 namespace WebBuySource.Interfaces
 {

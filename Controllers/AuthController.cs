@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebBanNongSan.Dto.Response;
+using WebBuySource.Dto.Response;
 using WebBuySource.Dto.Request;
 using WebBuySource.Interfaces;
+
 
 namespace WebBuySource.Controllers
 {
@@ -10,17 +11,22 @@ namespace WebBuySource.Controllers
     /// </summary>
     [ApiController]
     [Route("api/v1/auth")]
+
     public class AuthController : ControllerBase
     {
         private readonly IJwtService _jwtService;
+
+        private readonly IEmailService _emailService;
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthController"/> class.
         /// </summary>
         /// <param name="jwtService">Service responsible for handling JWT authentication logic.</param>
-        public AuthController(IJwtService jwtService)
+        public AuthController(IJwtService jwtService, IEmailService emailService)
         {
             _jwtService = jwtService;
+            _emailService = emailService;
         }
 
         /// <summary>
@@ -58,5 +64,18 @@ namespace WebBuySource.Controllers
             // Delegate the logic to JwtService
             return await _jwtService.RefreshToken(request);
         }
+
+        [HttpPost("send-otp")]
+        public async Task<BaseAPIResponse> SendOtp([FromBody] SendOtpRequestDTO request)
+        {
+            return await _emailService.SendOtp(request);
+        }
+
+        [HttpPost("verify-otp")]
+        public async Task<BaseAPIResponse> VerifyOtp([FromBody] VerifyOtpRequestDTO request)
+        {
+            return await _emailService.VerifyOtp(request);
+        } 
+
     }
 }
