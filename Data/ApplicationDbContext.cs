@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WebBuySource.Data.Seed;
 using WebBuySource.Models;
 using YourNamespace.Models;
 
@@ -301,8 +302,9 @@ namespace WebBuySource.Data
                       .HasForeignKey(d => d.UserId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
-            /// file seed role  
+             
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+         
 
         }
     }

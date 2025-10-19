@@ -2,6 +2,7 @@
 log.txt
 logs/
 .env
+.json
 
 # Build results
 bin/

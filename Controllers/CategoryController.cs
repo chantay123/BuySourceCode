@@ -22,7 +22,7 @@ namespace WebBuySource.Controllers
          
         /// <returns></returns>
         /// <summary>
-        /// Get Product .
+        ///.
         /// </summary>
         /// <param name="Get ">Condition to get all notify.</param>
         /// <returns>The requested attchment of current user.</returns>

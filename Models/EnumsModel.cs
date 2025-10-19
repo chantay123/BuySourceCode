@@ -1,6 +1,8 @@
 ﻿namespace WebBuySource.Models.Enums
 {
-    public enum Gender { MALE, FEMALE, OTHER }
+    public enum Gender { MALE, FEMALE, OTHER,
+        Male
+    }
     public enum UserStatus { ACTIVE, INACTIVE, BANNED }
     public enum TransactionStatus { PENDING, COMPLETED, FAILED, REFUNDED }
     public enum PayoutStatus { PENDING, PAID, FAILED }

@@ -29,13 +29,20 @@
         public const string OtpExpiredOrMissing = "OTP has expired or does not exist.";
         public const string OtpInvalid = "Invalid OTP code.";
         public const string OtpVerified = "OTP verification successful.";
+        public const string SmtpConfigMissing = "SMTP configuration is missing from environment variables.";
+        public const string OtpStillValid = "An OTP has already been sent and is still valid. Please wait until it expires.";
 
         // Category
         public const string CATEGORY_NOT_FOUND = "Category not found";
         public const string INVALID_CATEGORY_ID = "Invalid category ID provided";
 
-        // Product
-        public const string PRODUCT_NOT_FOUND = "Product not found";
- 
+        /// Environment Messages
+        public const string MissingJwtKey = "JWT_KEY is missing from environment variables.";
+        public const string MissingJwtIssuer = "JWT_ISSUER is missing from environment variables.";
+        public const string MissingJwtAudience = "JWT_AUDIENCE is missing from environment variables.";
+        public const string MissingJwtExpireMinutes = "JWT_EXPIRE_MINUTES is missing from environment variables.";
+        public const string InvalidJwtToken = "Invalid or expired JWT token.";
+        public const string JwtTokenGenerated = "JWT token generated successfully.";
+
     }
 }

@@ -15,15 +15,17 @@ var builder = WebApplication.CreateBuilder(args);
 Env.Load();
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
 
+//Get CORS from .env
+var allowedOriginsEnv = Environment.GetEnvironmentVariable("ALLOWED_ORIGINS")?
+    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+    ?? new[] { "http://localhost:3000" };
+
+// Get URL from .env
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
 
 //connect db 
-//var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DBCon");
-
-//if (string.IsNullOrEmpty(connectionString))
-//{
-//    throw new Exception("Connection string not found. Ensure the .env file is correctly configured and placed in the root directory.");
-//}
-
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(connectionString));
 
 //sign DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -38,21 +40,23 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IUserService , UserService >();
 builder.Services.AddScoped<IEmailService, EmailService>();
-
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 // memmory cache
 builder.Services.AddMemoryCache();
 
+//Get value form .env
+var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ;
+var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ;
+var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
 
 // Add JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
+}).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -60,14 +64,13 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
 });
 
 builder.Services.AddAuthorization();
-
 
 ///// cors
 //#region
