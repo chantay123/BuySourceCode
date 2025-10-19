@@ -7,68 +7,107 @@ using WebBuySource.Interfaces;
 using WebBuySource.Utilities;
 using WebBuySource.Utilities.Constants;
 using WebBuySource.Utilities.Helpers;
+using DotNetEnv;
 
 namespace WebBuySource.Services
 {
     public class EmailService : IEmailService
     {
-        private readonly IConfiguration _config;
         private readonly IMemoryCache _cache;
+        private readonly IConfiguration _config;
 
-        public EmailService(IConfiguration config, IMemoryCache cache)
+        public EmailService(IMemoryCache cache, IConfiguration config)
         {
-            _config = config;
-            _cache = cache;
+            _config = config; _cache = cache;
+
         }
 
+        /// <summary>
+        /// Sends a one-time password (OTP) to the user's email address.
+        /// </summary>
         public async Task<BaseAPIResponse> SendOtp(SendOtpRequestDTO request)
         {
+            // 1️⃣ Validate input
             if (string.IsNullOrEmpty(request.Email))
                 return BaseApiResponse.Error(MessageConstants.EmailEmpty);
 
+            // 2️⃣ Check if OTP already exists in cache (still valid)
+            if (_cache.TryGetValue(request.Email, out string? existingOtp))
+            {
+                return BaseApiResponse.Error(MessageConstants.OtpStillValid);
+            }
+
+            // 3️⃣ Generate a random 6-digit OTP
             var otp = new Random().Next(100000, 999999).ToString();
 
             try
             {
-                var smtpSection = _config.GetSection("Smtp");
-                var smtpClient = new SmtpClient(smtpSection["Host"])
-                {
-                    Port = int.Parse(smtpSection["Port"]),
-                    Credentials = new NetworkCredential(
-                        smtpSection["Username"],
-                        smtpSection["Password"]
-                    ),
-                    EnableSsl = smtpSection.GetValue<bool>("UseStartTls")
-                };
-                var mailMessage = EmailTemplateHelper.BuildOtpEmail(
-                        smtpSection["Username"], 
-                        smtpSection["FromName"],  
-                        request.Email,            
-                        otp                       
-                 );
+                // 4️⃣ Load SMTP settings from environment variables
+                var smtpHost = Environment.GetEnvironmentVariable("SMTP_HOST");
+                var smtpPort = Environment.GetEnvironmentVariable("SMTP_PORT");
+                var smtpUser = Environment.GetEnvironmentVariable("SMTP_USERNAME");
+                var smtpPass = Environment.GetEnvironmentVariable("SMTP_PASSWORD");
+                var smtpFromName = Environment.GetEnvironmentVariable("SMTP_FROM_NAME") ?? "My App";
+                var smtpFromEmail = Environment.GetEnvironmentVariable("SMTP_FROM_EMAIL");
+                var smtpUseStartTls = Environment.GetEnvironmentVariable("SMTP_USE_STARTTLS") ?? "true";
 
+                // 5️⃣ Check if any essential SMTP settings are missing
+                if (string.IsNullOrEmpty(smtpHost) || string.IsNullOrEmpty(smtpPort) ||
+                    string.IsNullOrEmpty(smtpUser) || string.IsNullOrEmpty(smtpPass))
+                {
+                    return BaseApiResponse.Error(MessageConstants.SmtpConfigMissing);
+                }
+
+                // 6️⃣ Initialize SMTP client
+                var smtpClient = new SmtpClient(smtpHost)
+                {
+                    Port = int.Parse(smtpPort),
+                    Credentials = new NetworkCredential(smtpUser, smtpPass),
+                    EnableSsl = bool.Parse(smtpUseStartTls)
+                };
+
+                // 7️⃣ Build email message using helper template
+                var mailMessage = EmailTemplateHelper.BuildOtpEmail(
+                    smtpFromEmail ?? smtpUser, // From address
+                    smtpFromName,              // Display name
+                    request.Email,             // To address
+                    otp                        // OTP code
+                );
+
+                // Send the email asynchronously
                 mailMessage.To.Add(request.Email);
                 await smtpClient.SendMailAsync(mailMessage);
 
-                // Cache OTP for 5  minutes
-                _cache.Set(request.Email, otp, TimeSpan.FromMinutes(5));
+                // Read OTP expiry time from environment variables (default 5 minutes)
+                var expiry = int.Parse(Environment.GetEnvironmentVariable("OTP_EXPIRY_MINUTES") ?? "5");
 
-                return BaseApiResponse.OK( MessageConstants.OtpSentSuccess);
+                // Cache the OTP temporarily for later verification
+                _cache.Set(request.Email, otp, TimeSpan.FromMinutes(expiry));
+
+                return BaseApiResponse.OK(MessageConstants.OtpSentSuccess);
             }
             catch (Exception ex)
             {
+                //Handle any SMTP or network-related errors
                 return BaseApiResponse.Error($"{MessageConstants.OtpSendFailed}: {ex.Message}");
             }
         }
 
+
+        /// <summary>
+        /// Verifies that the user-provided OTP matches the cached value.
+        /// </summary>
         public Task<BaseAPIResponse> VerifyOtp(VerifyOtpRequestDTO request)
         {
+            // Try to retrieve the OTP from cache
             if (!_cache.TryGetValue(request.Email, out string? cachedOtp))
                 return Task.FromResult(BaseApiResponse.Error(MessageConstants.OtpExpiredOrMissing));
 
+            // Compare provided OTP with cached one
             if (cachedOtp != request.Otp)
                 return Task.FromResult(BaseApiResponse.Error(MessageConstants.OtpInvalid));
 
+            // Remove OTP from cache once it's successfully verified
             _cache.Remove(request.Email);
             return Task.FromResult(BaseApiResponse.OK(MessageConstants.OtpVerified));
         }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebBuySource.Data;
@@ -11,9 +12,11 @@ using WebBuySource.Data;
 namespace WebBuySource.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251019094915_creeate roll addmin")]
+    partial class creeaterolladdmin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1137,38 +1140,38 @@ namespace WebBuySource.Migrations
                         {
                             Id = 12,
                             Balance = 0.00m,
-                            CreatedAt = new DateTime(2025, 10, 19, 9, 50, 24, 0, DateTimeKind.Utc).AddTicks(9941),
+                            CreatedAt = new DateTime(2025, 10, 19, 9, 49, 14, 420, DateTimeKind.Utc).AddTicks(4293),
                             Email = "duongquocnam224400@gmail.com",
                             FailedLoginAttempts = 0,
                             Fullname = "Administrator",
                             Gender = "Male",
                             IsVerified = true,
-                            Password = "$2a$11$IqR4vscoYT.1jgvsRXGd6eXNypeMGMjE1wxSr9Nx/v/ct/VeUv7KO",
+                            Password = "$2a$11$vBs6hv5n6kJu2j/iejVh0OXW/n5bFj8.dZo7qVFNFdgXz9kd5k9bu",
                             PhoneNumber = "0123456789",
                             RoleId = 2,
                             Status = "ACTIVE",
                             Timezone = "Asia/Ho_Chi_Minh",
                             TotpEnabled = false,
-                            UpdatedAt = new DateTime(2025, 10, 19, 9, 50, 24, 0, DateTimeKind.Utc).AddTicks(9943),
+                            UpdatedAt = new DateTime(2025, 10, 19, 9, 49, 14, 420, DateTimeKind.Utc).AddTicks(4294),
                             Username = "admin"
                         },
                         new
                         {
-                            Id = 13,
+                            Id = 11,
                             Balance = 0.00m,
-                            CreatedAt = new DateTime(2025, 10, 19, 9, 50, 24, 0, DateTimeKind.Utc).AddTicks(9958),
+                            CreatedAt = new DateTime(2025, 10, 19, 9, 49, 14, 420, DateTimeKind.Utc).AddTicks(4306),
                             Email = "phanchantay.ltp21@gmail.com",
                             FailedLoginAttempts = 0,
                             Fullname = "System Administrator",
                             Gender = "Male",
                             IsVerified = true,
-                            Password = "$2a$11$zctxBI0YfV4CD..dBkLxa.6/oh2sZ84iEgeSWHMvtR6dxVVFzGzju",
+                            Password = "$2a$11$U1OvSAbnE5yWDDoM49IL8eJ05OQa6mpweSg6fuBYd9Qgz//67dxiW",
                             PhoneNumber = "0987654321",
                             RoleId = 2,
                             Status = "ACTIVE",
                             Timezone = "Asia/Ho_Chi_Minh",
                             TotpEnabled = false,
-                            UpdatedAt = new DateTime(2025, 10, 19, 9, 50, 24, 0, DateTimeKind.Utc).AddTicks(9959),
+                            UpdatedAt = new DateTime(2025, 10, 19, 9, 49, 14, 420, DateTimeKind.Utc).AddTicks(4307),
                             Username = "superadmin"
                         });
                 });

@@ -3,26 +3,18 @@ using WebBuySource.Dto.Response;
 using WebBuySource.Dto.Request;
 using WebBuySource.Interfaces;
 
-
 namespace WebBuySource.Controllers
 {
     /// <summary>
-    /// Handles all authentication-related endpoints such as registration, login, and token refresh.
+    /// Handles all authentication-related endpoints such as registration, login, token refresh, and OTP verification.
     /// </summary>
     [ApiController]
     [Route("api/v1/auth")]
-
     public class AuthController : ControllerBase
     {
         private readonly IJwtService _jwtService;
-
         private readonly IEmailService _emailService;
 
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AuthController"/> class.
-        /// </summary>
-        /// <param name="jwtService">Service responsible for handling JWT authentication logic.</param>
         public AuthController(IJwtService jwtService, IEmailService emailService)
         {
             _jwtService = jwtService;
@@ -32,9 +24,13 @@ namespace WebBuySource.Controllers
         /// <summary>
         /// Registers a new user with the system.
         /// </summary>
-        /// <param name="request">User registration details (username, email, password, etc.).</param>
+        /// <param name="request">User registration details.</param>
         /// <returns>Returns success or failure message.</returns>
+        /// <response code="200">User registered successfully.</response>
+        /// <response code="400">Invalid registration details.</response>
         [HttpPost("register")]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)]
         public async Task<BaseAPIResponse> Register([FromBody] RegisterRequestDTO request)
         {
             return await _jwtService.Register(request);
@@ -45,7 +41,13 @@ namespace WebBuySource.Controllers
         /// </summary>
         /// <param name="request">Login credentials including username and password.</param>
         /// <returns>Returns an access token and a refresh token if login succeeds.</returns>
+        /// <response code="200">Login successful.</response>
+        /// <response code="400">Invalid login credentials.</response>
+        /// <response code="401">Unauthorized, invalid username/password.</response>
         [HttpPost("login")]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status401Unauthorized)]
         public async Task<BaseAPIResponse> Login([FromBody] LoginRequestDTO request)
         {
             return await _jwtService.Login(request);
@@ -56,26 +58,44 @@ namespace WebBuySource.Controllers
         /// </summary>
         /// <param name="request">Contains the expired access token and the current refresh token.</param>
         /// <returns>Returns a new access token and refresh token if the old refresh token is valid.</returns>
+        /// <response code="200">Token refreshed successfully.</response>
+        /// <response code="401">Invalid or expired refresh token.</response>
         [HttpPost("refresh-token")]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status401Unauthorized)]
         public async Task<BaseAPIResponse> RefreshToken([FromBody] RefreshTokenRequestDTO request)
         {
-            // Delegate the logic to JwtService
             return await _jwtService.RefreshToken(request);
         }
 
+        /// <summary>
+        /// Sends a One-Time Password (OTP) to the user's email.
+        /// </summary>
+        /// <param name="request">Contains email or user identifier.</param>
+        /// <returns>Result of sending OTP.</returns>
+        /// <response code="200">OTP sent successfully.</response>
+        /// <response code="400">Invalid request or email not found.</response>
         [HttpPost("send-otp")]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)]
         public async Task<BaseAPIResponse> SendOtp([FromBody] SendOtpRequestDTO request)
         {
             return await _emailService.SendOtp(request);
         }
 
+        /// <summary>
+        /// Verifies a One-Time Password (OTP) sent to the user.
+        /// </summary>
+        /// <param name="request">Contains email/user identifier and OTP code.</param>
+        /// <returns>Result of OTP verification.</returns>
+        /// <response code="200">OTP verified successfully.</response>
+        /// <response code="400">Invalid OTP or expired.</response>
         [HttpPost("verify-otp")]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)]
         public async Task<BaseAPIResponse> VerifyOtp([FromBody] VerifyOtpRequestDTO request)
         {
             return await _emailService.VerifyOtp(request);
-        } 
-
+        }
     }
 }

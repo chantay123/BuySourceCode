@@ -12,8 +12,8 @@ using WebBuySource.Data;
 namespace WebBuySource.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250929073050_seed_role")]
-    partial class seed_role
+    [Migration("20251019095024_creeate roll addmin1")]
+    partial class creeaterolladdmin1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -895,7 +895,7 @@ namespace WebBuySource.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 8,
+                            Id = 13,
                             CreatedAt = new DateTime(2025, 9, 29, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Regular system user",
                             IsSystem = false,
@@ -904,7 +904,7 @@ namespace WebBuySource.Migrations
                         },
                         new
                         {
-                            Id = 9,
+                            Id = 14,
                             CreatedAt = new DateTime(2025, 9, 29, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Administrator with delegated permissions",
                             IsSystem = false,
@@ -1065,8 +1065,7 @@ namespace WebBuySource.Migrations
 
                     b.Property<string>("Fullname")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Gender")
                         .HasColumnType("text");
@@ -1088,7 +1087,8 @@ namespace WebBuySource.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<DateTime?>("PasswordChangedAt")
                         .HasColumnType("timestamp with time zone");
@@ -1127,14 +1127,53 @@ namespace WebBuySource.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 12,
+                            Balance = 0.00m,
+                            CreatedAt = new DateTime(2025, 10, 19, 9, 50, 24, 0, DateTimeKind.Utc).AddTicks(9941),
+                            Email = "duongquocnam224400@gmail.com",
+                            FailedLoginAttempts = 0,
+                            Fullname = "Administrator",
+                            Gender = "Male",
+                            IsVerified = true,
+                            Password = "$2a$11$IqR4vscoYT.1jgvsRXGd6eXNypeMGMjE1wxSr9Nx/v/ct/VeUv7KO",
+                            PhoneNumber = "0123456789",
+                            RoleId = 2,
+                            Status = "ACTIVE",
+                            Timezone = "Asia/Ho_Chi_Minh",
+                            TotpEnabled = false,
+                            UpdatedAt = new DateTime(2025, 10, 19, 9, 50, 24, 0, DateTimeKind.Utc).AddTicks(9943),
+                            Username = "admin"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Balance = 0.00m,
+                            CreatedAt = new DateTime(2025, 10, 19, 9, 50, 24, 0, DateTimeKind.Utc).AddTicks(9958),
+                            Email = "phanchantay.ltp21@gmail.com",
+                            FailedLoginAttempts = 0,
+                            Fullname = "System Administrator",
+                            Gender = "Male",
+                            IsVerified = true,
+                            Password = "$2a$11$zctxBI0YfV4CD..dBkLxa.6/oh2sZ84iEgeSWHMvtR6dxVVFzGzju",
+                            PhoneNumber = "0987654321",
+                            RoleId = 2,
+                            Status = "ACTIVE",
+                            Timezone = "Asia/Ho_Chi_Minh",
+                            TotpEnabled = false,
+                            UpdatedAt = new DateTime(2025, 10, 19, 9, 50, 24, 0, DateTimeKind.Utc).AddTicks(9959),
+                            Username = "superadmin"
+                        });
                 });
 
             modelBuilder.Entity("WebBuySource.Models.UserFavorites", b =>

@@ -119,37 +119,58 @@ namespace WebBuySource.Services
         /// <returns>Signed JWT token string.</returns>S
         public string GenerateToken(User user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            // Load environment variables (values from your .env file)
+            var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+            var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
+            var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+            var jwtExpireMinutes = Environment.GetEnvironmentVariable("JWT_EXPIRE_MINUTES");
+
+            // Validate environment variables to prevent null errors
+            if (string.IsNullOrEmpty(jwtKey))
+                throw new Exception(MessageConstants.MissingJwtKey);
+            if (string.IsNullOrEmpty(jwtIssuer))
+                throw new Exception(MessageConstants.MissingJwtIssuer);
+            if (string.IsNullOrEmpty(jwtAudience))
+                throw new Exception(MessageConstants.MissingJwtAudience);
+            if (string.IsNullOrEmpty(jwtExpireMinutes))
+                jwtExpireMinutes = "60"; // default fallback // default expiration time (in minutes)
+
+            // Create the signing key using the secret from the environment variable
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            // Define issue and expiration times
             var now = DateTime.UtcNow;
-            var expireMinutes = Convert.ToInt32(_config["Jwt:ExpireMinutes"]);
-            var expires = DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:ExpireMinutes"]));
+            var expires = now.AddMinutes(Convert.ToInt32(jwtExpireMinutes));
+
+            // Convert to Unix timestamps for JWT standard claims
             var iat = new DateTimeOffset(now).ToUnixTimeSeconds();
             var exp = new DateTimeOffset(expires).ToUnixTimeSeconds();
 
-            // Define claims (user identity and metadata)
+            // Define claims (user information embedded in the token)
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Username),
-                new Claim("id", user.Id.ToString()),
-                new Claim("name", user.Fullname.ToString()),
-              
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, iat.ToString(), ClaimValueTypes.Integer64),
-                new Claim(JwtRegisteredClaimNames.Exp, exp.ToString(), ClaimValueTypes.Integer64),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Username),   // subject (username)
+                new Claim("id", user.Id.ToString()),                     // custom claim: user ID
+                new Claim("name", user.Fullname ?? string.Empty),        // custom claim: user full name
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // unique token ID
+                new Claim(JwtRegisteredClaimNames.Iat, iat.ToString(), ClaimValueTypes.Integer64), // issued at
+                new Claim(JwtRegisteredClaimNames.Exp, exp.ToString(), ClaimValueTypes.Integer64), // expiration
             };
 
-            // Create and sign the token
+            // Create and sign the JWT
             var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
-                claims: claims,
-                expires: expires,
-                signingCredentials: credentials
+                issuer: jwtIssuer,         // token issuer
+                audience: jwtAudience,     // token audience
+                claims: claims,            // user claims
+                expires: expires,          // expiration date
+                signingCredentials: credentials // signature credentials
             );
 
+            // Generate and return the final token string
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
 
         public string GenerateRefreshToken()
         {
@@ -162,7 +183,7 @@ namespace WebBuySource.Services
         public async Task<BaseAPIResponse> RefreshToken(RefreshTokenRequestDTO request)
         {
             var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadJwtToken(request.AccessToken);
+            var jwtToken = handler.ReadJwtToken(request.accessToken);
             var username = jwtToken?.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
             var expClaim = jwtToken?.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp)?.Value;
             string tokenStatusMessage = string.Empty;
@@ -183,7 +204,7 @@ namespace WebBuySource.Services
             if (!RefreshTokens.TryGetValue(username, out var storedRefreshToken))
                 return BaseApiResponse.Error(MessageConstants.REFRESH_TOKEN_NOT_FOUND);
 
-            if (storedRefreshToken != request.RefreshToken)
+            if (storedRefreshToken != request.refreshToken)
                 return BaseApiResponse.Error(MessageConstants.INVALID_REFRESH_TOKEN);
 
             var user = UserRepository.GetAllAsNoTracking()

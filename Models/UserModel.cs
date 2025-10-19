@@ -1,6 +1,5 @@
-﻿using Microsoft.VisualBasic;
+﻿
 using System.ComponentModel.DataAnnotations;
-
 using WebBuySource.Models.Enums;
 using YourNamespace.Models;
 
@@ -38,7 +37,8 @@ namespace WebBuySource.Models
         [Required]
         public int RoleId { get; set; }
         public Role Role { get; set; }
-
+         
+        public RefreshToken RefreshToken { get; set; }
         public string? GoogleId { get; set; }
         public string? FacebookId { get; set; }
 
