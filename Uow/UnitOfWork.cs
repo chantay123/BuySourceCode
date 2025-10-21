@@ -33,11 +33,24 @@ namespace WebBuySource.Uow
         private IRepository<User > _UserRepository;
 
         /// <summary>
-        /// Repository of table User
+        /// Repository of table User 
         /// </summary
         public IRepository<User> UserRepository
         {
             get { return _UserRepository ??= new Repository<User>(_dbContext);}
+        }
+
+        /// <summary>
+        /// Repository of table RefreshToken
+        /// </summary>
+        private IRepository<RefreshToken> _RefreshTokenRepository;
+
+        /// <summary>
+        /// Repository of table RefreshToken
+        /// </summary>
+        public IRepository<RefreshToken> RefreshTokenRepository
+        {
+            get { return _RefreshTokenRepository ??= new Repository<RefreshToken>(_dbContext); }
         }
 
 

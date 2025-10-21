@@ -205,5 +205,19 @@ namespace WebBuySource.Interfaces
         /// <returns>The number of state entries written to the database.</returns>
         Task<int> SaveChangesAsync();
         #endregion
+
+        #region Delete entity directly
+        /// <summary>
+        /// Delete an entity from the database.
+        /// </summary>
+        /// <param name="entity">The entity to delete.</param>
+        void Delete(TEntity entity);
+
+        /// <summary>
+        /// Delete multiple entities from the database.
+        /// </summary>
+        /// <param name="entities">The entities to delete.</param>
+        void DeleteRange(IEnumerable<TEntity> entities);
+        #endregion
     }
 }

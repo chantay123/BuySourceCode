@@ -237,6 +237,26 @@ namespace WebBuySource.Data
         }
         #endregion
 
+        #region Delete entity directly
+        /// <summary>
+        /// Delete an entity from the database.
+        /// </summary>
+        /// <param name="entity">The entity to delete.</param>
+        public void Delete(TEntity entity)
+        {
+            DbSet.Remove(entity);
+        }
+
+        /// <summary>
+        /// Delete multiple entities from the database.
+        /// </summary>
+        /// <param name="entities">The entities to delete.</param>
+        public void DeleteRange(IEnumerable<TEntity> entities)
+        {
+            DbSet.RemoveRange(entities);
+        }
+        #endregion
+
         #region Creates a LINQ query based on a raw SQL query.
         /// <summary>
         /// Creates a LINQ query based on a raw SQL query.

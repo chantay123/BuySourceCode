@@ -303,7 +303,7 @@ namespace WebBuySource.Data
                       .OnDelete(DeleteBehavior.Cascade);
             });
              
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
          
 
         }

@@ -28,12 +28,7 @@ namespace WebBuySource.Interfaces
         /// <returns>API response containing token and expiration details.</returns>
         Task<BaseAPIResponse> Login(LoginRequestDTO request);
 
-        /// <summary>
-        /// Generates a secure random refresh token.
-        /// </summary>
-        /// <returns>Base64 encoded refresh token.</returns>
-        string GenerateRefreshToken();
-
+  
         /// <summary>
         /// Generates a new access token using a valid refresh token.
         /// </summary>
