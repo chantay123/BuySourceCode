@@ -12,8 +12,8 @@ using WebBuySource.Data;
 namespace WebBuySource.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251019095024_creeate roll addmin1")]
-    partial class creeaterolladdmin1
+    [Migration("20251020113947_updatate user1")]
+    partial class updatateuser1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -781,6 +781,18 @@ namespace WebBuySource.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("CreatedById")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("DeletedById")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("DeviceId")
                         .HasColumnType("integer");
 
@@ -794,7 +806,16 @@ namespace WebBuySource.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer");
+
                     b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("UserId1")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -802,6 +823,9 @@ namespace WebBuySource.Migrations
                     b.HasIndex("DeviceId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1")
+                        .IsUnique();
 
                     b.ToTable("RefreshTokens");
                 });
@@ -891,26 +915,6 @@ namespace WebBuySource.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 13,
-                            CreatedAt = new DateTime(2025, 9, 29, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Regular system user",
-                            IsSystem = false,
-                            Name = "User",
-                            UpdatedAt = new DateTime(2025, 9, 29, 0, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Id = 14,
-                            CreatedAt = new DateTime(2025, 9, 29, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Administrator with delegated permissions",
-                            IsSystem = false,
-                            Name = "Admin",
-                            UpdatedAt = new DateTime(2025, 9, 29, 0, 0, 0, 0, DateTimeKind.Utc)
-                        });
                 });
 
             modelBuilder.Entity("WebBuySource.Models.RolePermission", b =>
@@ -1134,46 +1138,6 @@ namespace WebBuySource.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 12,
-                            Balance = 0.00m,
-                            CreatedAt = new DateTime(2025, 10, 19, 9, 50, 24, 0, DateTimeKind.Utc).AddTicks(9941),
-                            Email = "duongquocnam224400@gmail.com",
-                            FailedLoginAttempts = 0,
-                            Fullname = "Administrator",
-                            Gender = "Male",
-                            IsVerified = true,
-                            Password = "$2a$11$IqR4vscoYT.1jgvsRXGd6eXNypeMGMjE1wxSr9Nx/v/ct/VeUv7KO",
-                            PhoneNumber = "0123456789",
-                            RoleId = 2,
-                            Status = "ACTIVE",
-                            Timezone = "Asia/Ho_Chi_Minh",
-                            TotpEnabled = false,
-                            UpdatedAt = new DateTime(2025, 10, 19, 9, 50, 24, 0, DateTimeKind.Utc).AddTicks(9943),
-                            Username = "admin"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            Balance = 0.00m,
-                            CreatedAt = new DateTime(2025, 10, 19, 9, 50, 24, 0, DateTimeKind.Utc).AddTicks(9958),
-                            Email = "phanchantay.ltp21@gmail.com",
-                            FailedLoginAttempts = 0,
-                            Fullname = "System Administrator",
-                            Gender = "Male",
-                            IsVerified = true,
-                            Password = "$2a$11$zctxBI0YfV4CD..dBkLxa.6/oh2sZ84iEgeSWHMvtR6dxVVFzGzju",
-                            PhoneNumber = "0987654321",
-                            RoleId = 2,
-                            Status = "ACTIVE",
-                            Timezone = "Asia/Ho_Chi_Minh",
-                            TotpEnabled = false,
-                            UpdatedAt = new DateTime(2025, 10, 19, 9, 50, 24, 0, DateTimeKind.Utc).AddTicks(9959),
-                            Username = "superadmin"
-                        });
                 });
 
             modelBuilder.Entity("WebBuySource.Models.UserFavorites", b =>
@@ -1609,6 +1573,10 @@ namespace WebBuySource.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("WebBuySource.Models.User", null)
+                        .WithOne("RefreshToken")
+                        .HasForeignKey("WebBuySource.Models.RefreshToken", "UserId1");
+
                     b.Navigation("User");
                 });
 
@@ -1852,6 +1820,9 @@ namespace WebBuySource.Migrations
                     b.Navigation("Notifications");
 
                     b.Navigation("Payouts");
+
+                    b.Navigation("RefreshToken")
+                        .IsRequired();
 
                     b.Navigation("RefreshTokens");
 

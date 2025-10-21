@@ -2,7 +2,7 @@
 
 namespace WebBuySource.Models
 {
-    public class RefreshToken
+    public class RefreshToken: BaseModel
     {
         [Key]
         public int Id { get; set; }

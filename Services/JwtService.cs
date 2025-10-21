@@ -10,19 +10,18 @@ using WebBuySource.Models;
 using WebBuySource.Utilities;
 using WebBuySource.Utilities.Constants;
 
-
 namespace WebBuySource.Services
 {
+    /// <summary>
+    /// Service responsible for handling JWT authentication,
+    /// including token generation, validation, and refresh logic.
+    /// </summary>
     public class JwtService : BaseService, IJwtService
     {
-        private static readonly Dictionary<string, string> RefreshTokens = new();
-
         #region Repository references
-        /// <summary>
-        /// Repository for accessing and managing user data.
-        /// </summary>
         private IRepository<User> UserRepository => UnitOfWork.UserRepository;
-        #endregion  
+        private IRepository<RefreshToken> RefreshTokenRepository => UnitOfWork.RefreshTokenRepository;
+        #endregion
 
         private readonly IConfiguration _config;
 
@@ -31,45 +30,42 @@ namespace WebBuySource.Services
             _config = config;
         }
 
+        #region Register
         /// <summary>
         /// Registers a new user with encrypted password and default role.
         /// </summary>
-        /// <param name="request">Registration data provided by the client.</param>
-        /// <returns>API response indicating registration success or failure.</returns>
         public async Task<BaseAPIResponse> Register(RegisterRequestDTO request)
         {
             // Validate password confirmation
             if (request.Password != request.ConfirmPassword)
                 return BaseApiResponse.Error(MessageConstants.PASSWORD_NOT_MATCH);
 
-            // Check if username or email already exists
+            // Check for existing user
             var existingUser = UserRepository.GetAllAsNoTracking()
-                .FirstOrDefault(u => u.Email == request.Email || u.Email == request.Email);
+                .FirstOrDefault(u => u.Email == request.Email);
 
             if (existingUser != null)
                 return BaseApiResponse.Error(MessageConstants.USERNAME_OR_EMAIL_EXISTS);
 
-            //Hash the user's password using BCrypt
+            // Hash password
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
-          // Create a new user entity with default role 
+            // Create new user
             var newUser = new User
             {
                 Username = request.Email.Trim(),
                 Fullname = request.Fullname.Trim(),
                 Password = hashedPassword,
                 Email = request.Email.Trim(),
-                RoleId = 1, 
-                PhoneNumber = request.Phone,        
+                RoleId = 1, // Default: user
+                PhoneNumber = request.Phone,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
 
-            //Save the new user to the database
-            await UserRepository.AddAsync(newUser).ConfigureAwait(false);
+            await UserRepository.AddAsync(newUser);
             await UserRepository.SaveChangesAsync();
 
-            //Return success response
             return BaseApiResponse.OK(new
             {
                 message = MessageConstants.REGISTER_SUCCESS,
@@ -77,155 +73,134 @@ namespace WebBuySource.Services
                 email = newUser.Email
             });
         }
-        
+        #endregion
+
+        #region Login
         /// <summary>
-        /// Authenticates a user and generates a JWT token if credentials are valid.
+        /// Authenticates user credentials and issues JWT + Refresh Token.
         /// </summary>
-        /// <param name="request">Login credentials (username and password).</param>
-        /// <returns>API response containing JWT token and expiration info.</returns>
         public async Task<BaseAPIResponse> Login(LoginRequestDTO request)
         {
-            //  Find user by username
+            // Find user by email
             var user = UserRepository.GetAllAsNoTracking()
                 .FirstOrDefault(u => u.Email == request.Email);
 
             if (user == null)
                 return BaseApiResponse.NotFound(MessageConstants.USER_NOT_FOUND);
 
-            //  Verify password using BCrypt
+            // Verify password
             bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
             if (!isPasswordValid)
                 return BaseApiResponse.Error(MessageConstants.INVALID_PASSWORD);
 
-            //  Generate new access token and refresh token
+            // Generate tokens
             var accessToken = GenerateToken(user);
-            var refreshToken = GenerateRefreshToken();
+            var refreshToken = GenerateToken(user);
 
-            //Store the refresh token (you can store it in DB or cache)
-            RefreshTokens[user.Username] = refreshToken;
+            // Store refresh token in DB
+            var token = new RefreshToken
+            {
+                Token = refreshToken,
+                UserId = user.Id,
+                ExpiresAt = DateTime.UtcNow.AddDays(7),
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
 
-            //Return response to client
+            await RefreshTokenRepository.AddAsync(token);
+            await RefreshTokenRepository.SaveChangesAsync();
+
             return BaseApiResponse.OK(new AuthResponseDTO
             {
                 AccessToken = accessToken,
-                RefreshToken = refreshToken,
+                RefreshToken = refreshToken
             }, MessageConstants.LOGIN_SUCCESS);
         }
+        #endregion
 
+        #region RefreshToken
         /// <summary>
-        /// Generates a signed JWT access token for the authenticated user.
+        /// Validates refresh token and issues new access token.
         /// </summary>
-        /// <param name="user">User data to embed in the token claims.</param>
-        /// <returns>Signed JWT token string.</returns>S
-        public string GenerateToken(User user)
-        {
-            // Load environment variables (values from your .env file)
-            var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
-            var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
-            var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
-            var jwtExpireMinutes = Environment.GetEnvironmentVariable("JWT_EXPIRE_MINUTES");
-
-            // Validate environment variables to prevent null errors
-            if (string.IsNullOrEmpty(jwtKey))
-                throw new Exception(MessageConstants.MissingJwtKey);
-            if (string.IsNullOrEmpty(jwtIssuer))
-                throw new Exception(MessageConstants.MissingJwtIssuer);
-            if (string.IsNullOrEmpty(jwtAudience))
-                throw new Exception(MessageConstants.MissingJwtAudience);
-            if (string.IsNullOrEmpty(jwtExpireMinutes))
-                jwtExpireMinutes = "60"; // default fallback // default expiration time (in minutes)
-
-            // Create the signing key using the secret from the environment variable
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            // Define issue and expiration times
-            var now = DateTime.UtcNow;
-            var expires = now.AddMinutes(Convert.ToInt32(jwtExpireMinutes));
-
-            // Convert to Unix timestamps for JWT standard claims
-            var iat = new DateTimeOffset(now).ToUnixTimeSeconds();
-            var exp = new DateTimeOffset(expires).ToUnixTimeSeconds();
-
-            // Define claims (user information embedded in the token)
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Username),   // subject (username)
-                new Claim("id", user.Id.ToString()),                     // custom claim: user ID
-                new Claim("name", user.Fullname ?? string.Empty),        // custom claim: user full name
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // unique token ID
-                new Claim(JwtRegisteredClaimNames.Iat, iat.ToString(), ClaimValueTypes.Integer64), // issued at
-                new Claim(JwtRegisteredClaimNames.Exp, exp.ToString(), ClaimValueTypes.Integer64), // expiration
-            };
-
-            // Create and sign the JWT
-            var token = new JwtSecurityToken(
-                issuer: jwtIssuer,         // token issuer
-                audience: jwtAudience,     // token audience
-                claims: claims,            // user claims
-                expires: expires,          // expiration date
-                signingCredentials: credentials // signature credentials
-            );
-
-            // Generate and return the final token string
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
-
-        public string GenerateRefreshToken()
-        {
-            var randomNumber = new byte[64];
-            using var rng = RandomNumberGenerator.Create();
-            rng.GetBytes(randomNumber);
-            return Convert.ToBase64String(randomNumber);
-        }
-
         public async Task<BaseAPIResponse> RefreshToken(RefreshTokenRequestDTO request)
         {
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadJwtToken(request.accessToken);
-            var username = jwtToken?.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
-            var expClaim = jwtToken?.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp)?.Value;
-            string tokenStatusMessage = string.Empty;
+            // Find refresh token in DB
+            var existingToken = RefreshTokenRepository.GetAll()
+                .FirstOrDefault(rt => rt.Token == request.refreshToken);
 
-            if (long.TryParse(expClaim, out var exp))
-            {
-                var expDate = DateTimeOffset.FromUnixTimeSeconds(exp).UtcDateTime;
-
-                if (expDate < DateTime.UtcNow)
-                    tokenStatusMessage = MessageConstants.ACCESS_TOKEN_EXPIRED;
-                else
-                    tokenStatusMessage = MessageConstants.ACCESS_TOKEN_VALID;
-            }
-
-            if (string.IsNullOrEmpty(username))
-                return BaseApiResponse.Error(MessageConstants.INVALID_ACCESS_TOKEN);
-
-            if (!RefreshTokens.TryGetValue(username, out var storedRefreshToken))
+            if (existingToken == null)
                 return BaseApiResponse.Error(MessageConstants.REFRESH_TOKEN_NOT_FOUND);
 
-            if (storedRefreshToken != request.refreshToken)
-                return BaseApiResponse.Error(MessageConstants.INVALID_REFRESH_TOKEN);
+            //Delete Refresh token expired
+            if (existingToken.ExpiresAt < DateTime.UtcNow)
+            {
+                RefreshTokenRepository.Delete(existingToken);
+                await RefreshTokenRepository.SaveChangesAsync();
+                return BaseApiResponse.Error("Refresh token expired.");
+            }
 
-            var user = UserRepository.GetAllAsNoTracking()
-                .FirstOrDefault(u => u.Username == username);
+            // Get related user
+            var user = UserRepository.GetAll()
+                .FirstOrDefault(u => u.Id == existingToken.UserId);
 
             if (user == null)
-                return BaseApiResponse.Error(MessageConstants.USER_NOT_FOUND);
+                return BaseApiResponse.NotFound(MessageConstants.USER_NOT_FOUND);
 
+            // Generate new tokens
             var newAccessToken = GenerateToken(user);
-            var newRefreshToken = GenerateRefreshToken();
+            var newRefreshTokenValue = GenerateToken(user);
 
-            RefreshTokens[username] = newRefreshToken;
+            // Optional: replace old token
+            existingToken.Token = newRefreshTokenValue;
+            existingToken.ExpiresAt = DateTime.UtcNow.AddDays(7);
+            existingToken.UpdatedAt = DateTime.UtcNow;
+
+            await RefreshTokenRepository.SaveChangesAsync();
 
             return BaseApiResponse.OK(new AuthResponseDTO
             {
                 AccessToken = newAccessToken,
-                RefreshToken = newRefreshToken,
-               
-            },MessageConstants.NEW_ACCESS_TOKEN_ISSUED);
+                RefreshToken = newRefreshTokenValue
+            }, MessageConstants.NEW_ACCESS_TOKEN_ISSUED);
+        }
+        #endregion
+
+        #region Token generation
+        /// <summary>
+        /// Generates a signed JWT access token.
+        /// </summary>
+        public string GenerateToken(User user)
+        {
+            var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? _config["Jwt:Key"];
+            var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? _config["Jwt:Issuer"];
+            var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? _config["Jwt:Audience"];
+            var jwtExpireMinutes = Environment.GetEnvironmentVariable("JWT_EXPIRE_MINUTES") ?? "60";
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var now = DateTime.UtcNow;
+            var expires = now.AddMinutes(Convert.ToInt32(jwtExpireMinutes));
+
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Username),
+                new Claim("id", user.Id.ToString()),
+                new Claim("name", user.Fullname ?? string.Empty),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: jwtIssuer,
+                audience: jwtAudience,
+                claims: claims,
+                expires: expires,
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-
+        #endregion
     }
 }
