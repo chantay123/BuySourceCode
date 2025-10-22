@@ -6,6 +6,7 @@
         public const string SUCCESS = "Success";
         public const string FAILED = "Failed";
         public const string VALIDATION_ERROR = "Invalid data";
+        public const string InvalidRequest = "Invalid request data.";
 
         // Auth
         public const string USER_NOT_FOUND = "User not found";
@@ -21,8 +22,13 @@
         public const string ACCESS_TOKEN_EXPIRED = "Access token has expired.";
         public const string ACCESS_TOKEN_VALID = "Access token is still valid.";
         public const string NEW_ACCESS_TOKEN_ISSUED = "New access token has been issued successfully.";
-
+        public const string LOGOUT_SUCCESS = "Logout successful.";
+        public const string REFRESH_TOKEN_REQUIRED = "Refresh token is required.";
+        public const string REFRESH_TOKEN_INVALID = "Invalid or already logged out.";
+        public const string REFRESH_TOKEN_EXPIRED = "Refresh token has expired.";
+        public const string RESET_PASSWORD_SUCCESS = "Password reset successfully.";
         //email
+        public const string EMAIL_REQUIRED = "Email is required.";
         public const string EmailEmpty = "Email must not be empty.";
         public const string OtpSentSuccess = "OTP has been sent to your email.";
         public const string OtpSendFailed = "Failed to send OTP.";
