@@ -7,7 +7,7 @@ using WebBuySource.Interfaces;
 using WebBuySource.Utilities;
 using WebBuySource.Utilities.Constants;
 using WebBuySource.Utilities.Helpers;
-using DotNetEnv;
+
 
 namespace WebBuySource.Services
 {
@@ -27,17 +27,17 @@ namespace WebBuySource.Services
         /// </summary>
         public async Task<BaseAPIResponse> SendOtp(SendOtpRequestDTO request)
         {
-            // 1️⃣ Validate input
+            //  Validate input
             if (string.IsNullOrEmpty(request.Email))
                 return BaseApiResponse.Error(MessageConstants.EmailEmpty);
 
-            // 2️⃣ Check if OTP already exists in cache (still valid)
+            // Check if OTP already exists in cache (still valid)
             if (_cache.TryGetValue(request.Email, out string? existingOtp))
             {
                 return BaseApiResponse.Error(MessageConstants.OtpStillValid);
             }
 
-            // 3️⃣ Generate a random 6-digit OTP
+            // Generate a random 6-digit OTP
             var otp = new Random().Next(100000, 999999).ToString();
 
             try
@@ -66,7 +66,7 @@ namespace WebBuySource.Services
                     EnableSsl = bool.Parse(smtpUseStartTls)
                 };
 
-                // 7️⃣ Build email message using helper template
+                //  Build email message using helper template
                 var mailMessage = EmailTemplateHelper.BuildOtpEmail(
                     smtpFromEmail ?? smtpUser, // From address
                     smtpFromName,              // Display name
@@ -99,6 +99,8 @@ namespace WebBuySource.Services
         /// </summary>
         public Task<BaseAPIResponse> VerifyOtp(VerifyOtpRequestDTO request)
         {
+            if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Otp))
+                return Task.FromResult(BaseApiResponse.Error(MessageConstants.InvalidRequest));
             // Try to retrieve the OTP from cache
             if (!_cache.TryGetValue(request.Email, out string? cachedOtp))
                 return Task.FromResult(BaseApiResponse.Error(MessageConstants.OtpExpiredOrMissing));
@@ -111,5 +113,6 @@ namespace WebBuySource.Services
             _cache.Remove(request.Email);
             return Task.FromResult(BaseApiResponse.OK(MessageConstants.OtpVerified));
         }
+
     }
 }

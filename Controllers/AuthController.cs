@@ -31,6 +31,8 @@ namespace WebBuySource.Controllers
         [HttpPost("register")]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)]
         public async Task<BaseAPIResponse> Register([FromBody] RegisterRequestDTO request)
         {
             return await _jwtService.Register(request);
@@ -47,7 +49,8 @@ namespace WebBuySource.Controllers
         [HttpPost("login")]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)]
         public async Task<BaseAPIResponse> Login([FromBody] LoginRequestDTO request)
         {
             return await _jwtService.Login(request);
@@ -62,7 +65,9 @@ namespace WebBuySource.Controllers
         /// <response code="401">Invalid or expired refresh token.</response>
         [HttpPost("refresh-token")]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)]
         public async Task<BaseAPIResponse> RefreshToken([FromBody] RefreshTokenRequestDTO request)
         {
             return await _jwtService.RefreshToken(request);
@@ -77,7 +82,10 @@ namespace WebBuySource.Controllers
         /// <response code="400">Invalid request or email not found.</response>
         [HttpPost("send-otp")]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)]
         public async Task<BaseAPIResponse> SendOtp([FromBody] SendOtpRequestDTO request)
         {
             return await _emailService.SendOtp(request);
@@ -90,12 +98,64 @@ namespace WebBuySource.Controllers
         /// <returns>Result of OTP verification.</returns>
         /// <response code="200">OTP verified successfully.</response>
         /// <response code="400">Invalid OTP or expired.</response>
+        /// 
         [HttpPost("verify-otp")]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)]
         public async Task<BaseAPIResponse> VerifyOtp([FromBody] VerifyOtpRequestDTO request)
         {
             return await _emailService.VerifyOtp(request);
+        }
+
+        /// <summary>
+        /// Logout 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        /// 
+        [HttpPost("Logout")]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<BaseAPIResponse> Logout([FromBody] LogoutRequestDTO request)
+        {
+            return await _jwtService.Logout(request);
+        }
+
+        /// <summary>
+        /// forgot-password 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("forgot-password")]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<BaseAPIResponse> ForgotPassword([FromBody] ForgotPaswordRequestDTO request)
+        {
+            return await _jwtService.ForgotPassword(request);
+        }
+
+        /// <summary>
+        /// reset-password 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("reset-password")]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<BaseAPIResponse> ResetPassword([FromBody] ResetPasswordRequestDTO request)
+        {
+            return await _jwtService.ResetPassword(request);
         }
     }
 }

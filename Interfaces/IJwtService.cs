@@ -36,5 +36,27 @@ namespace WebBuySource.Interfaces
         /// <param name="refreshToken">Current valid refresh token.</param>
         /// <returns>New access token and refresh token pair.</returns>
         Task<BaseAPIResponse> RefreshToken(RefreshTokenRequestDTO request);
+
+        /// <summary>
+        ///  logout
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<BaseAPIResponse> Logout(LogoutRequestDTO  request);
+
+        /// <summary>
+        /// forgot-password
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<BaseAPIResponse> ForgotPassword( ForgotPaswordRequestDTO request);
+
+
+        /// <summary>
+        /// Reset- password 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<BaseAPIResponse> ResetPassword(ResetPasswordRequestDTO request);
     }
 }

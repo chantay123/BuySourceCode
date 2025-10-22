@@ -25,9 +25,12 @@ namespace WebBuySource.Services
 
         private readonly IConfiguration _config;
 
-        public JwtService(IUnitOfWork unitOfWork, IConfiguration config) : base(unitOfWork)
+        private readonly IEmailService _emailService;
+
+        public JwtService(IUnitOfWork unitOfWork, IConfiguration config, IEmailService emailService) : base(unitOfWork)
         {
             _config = config;
+            _emailService = emailService;
         }
 
         #region Register
@@ -136,7 +139,7 @@ namespace WebBuySource.Services
             {
                 RefreshTokenRepository.Delete(existingToken);
                 await RefreshTokenRepository.SaveChangesAsync();
-                return BaseApiResponse.Error("Refresh token expired.");
+                return BaseApiResponse.Error(MessageConstants.REFRESH_TOKEN_EXPIRED);
             }
 
             // Get related user
@@ -200,7 +203,83 @@ namespace WebBuySource.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
         #endregion
+
+        /// <summary>
+        /// Logout User     
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<BaseAPIResponse> Logout(LogoutRequestDTO request)
+        {
+            if (string.IsNullOrEmpty(request.RefreshToken))
+                return BaseApiResponse.Error(MessageConstants.REFRESH_TOKEN_REQUIRED);
+
+            var existingToken = RefreshTokenRepository.GetAll()
+                .FirstOrDefault(rt => rt.Token == request.RefreshToken);
+
+            if (existingToken == null)
+                return BaseApiResponse.Error(MessageConstants.REFRESH_TOKEN_INVALID);
+
+            RefreshTokenRepository.Delete(existingToken);
+            await RefreshTokenRepository.SaveChangesAsync();
+
+            return BaseApiResponse.OK(MessageConstants.LOGOUT_SUCCESS);
+        }
+
+        /// <summary>
+        /// ForgotPassword
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<BaseAPIResponse> ForgotPassword(ForgotPaswordRequestDTO request)
+        {
+            if (string.IsNullOrEmpty(request.Email))
+                return BaseApiResponse.Error(MessageConstants.EMAIL_REQUIRED);
+
+            var user = UserRepository.GetAllAsNoTracking()
+                .FirstOrDefault(u => u.Email == request.Email);
+
+            if (user == null)
+                return BaseApiResponse.Error(MessageConstants.USER_NOT_FOUND);
+
+            //  Sent OTP
+            var sendOtpResponse = await _emailService.SendOtp(new SendOtpRequestDTO
+            {
+                Email = request.Email
+            });
+
+            return BaseApiResponse.OK(MessageConstants.OtpSentSuccess);
+        }
+
+        /// <summary>
+        /// ResetPassword
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<BaseAPIResponse> ResetPassword(ResetPasswordRequestDTO request)
+        {
+            if (string.IsNullOrEmpty(request.Email))
+                return BaseApiResponse.Error(MessageConstants.EMAIL_REQUIRED);
+
+            if (request.NewPassword != request.ConfirmPassword)
+                return BaseApiResponse.Error(MessageConstants.PASSWORD_NOT_MATCH);
+
+            var user = UserRepository.GetAll().FirstOrDefault(u => u.Email == request.Email);
+            if (user == null)
+                return BaseApiResponse.NotFound(MessageConstants.USER_NOT_FOUND);
+
+            // Chage password
+            user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            user.UpdatedAt = DateTime.UtcNow;
+
+            UserRepository.Update(user);
+            await UserRepository.SaveChangesAsync();
+
+            return BaseApiResponse.OK(MessageConstants.RESET_PASSWORD_SUCCESS);
+        }
+
+       
+
     }
 }

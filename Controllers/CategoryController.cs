@@ -30,6 +30,10 @@ namespace WebBuySource.Controllers
         /// <response code="400">The Product  is invalid.</response>
         /// <response code="401">The Product   user not have permission to access this function.</response>
         [HttpGet]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)]
         public async Task<BaseAPIResponse> GetAllCategory([FromQuery] CategoryRequestDTO request)
         {
             // Call get all Attachment of current user.
