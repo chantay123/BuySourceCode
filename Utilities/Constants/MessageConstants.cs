@@ -50,5 +50,13 @@
         public const string InvalidJwtToken = "Invalid or expired JWT token.";
         public const string JwtTokenGenerated = "JWT token generated successfully.";
 
+        // ==== Category Messages ====
+        public const string CategoryNameRequired = "Category name is required.";
+        public const string CategoryCreatedSuccess = "Category created successfully.";
+        public const string CategoryUpdatedSuccess = "Category updated successfully.";
+        public const string CategoryDeletedSuccess = "Category deleted successfully.";
+        public const string CategoryNotFound = "Category not found.";
+        public const string InvalidCategoryId = "Invalid category ID.";
+
     }
 }

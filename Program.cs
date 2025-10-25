@@ -47,7 +47,8 @@ builder.Logging.AddConsole();
 builder.Services.AddMemoryCache();
 
 //Get value form .env
-var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ;
+var jwtAccessKey = Environment.GetEnvironmentVariable("JWT_ACCESS_KEY");
+var jwtRefreshKey = Environment.GetEnvironmentVariable("JWT_REFRESH_KEY");
 var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ;
 var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
 
@@ -56,7 +57,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
+}).AddJwtBearer("Access",options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -66,7 +67,8 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwtIssuer,
         ValidAudience = jwtAudience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAccessKey)),
+        ClockSkew = TimeSpan.Zero
     };
 });
 

@@ -21,8 +21,5 @@ namespace WebBuySource.Dto.Request
         [Compare("Password", ErrorMessage = "Passwords do not match")]
         public string ConfirmPassword { get; set; }
 
-        [Required(ErrorMessage = "Phone number is required")]
-        [RegularExpression(@"^(0|\+84)(\d{9})$", ErrorMessage = "Phone number must be a valid Vietnamese number")]
-        public string Phone { get; set; }
     }
 }

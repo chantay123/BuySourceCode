@@ -1,9 +1,12 @@
 ﻿using System.Net;
 using System.Net.Mail;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using WebBuySource.Dto.Request;
 using WebBuySource.Dto.Response;
 using WebBuySource.Interfaces;
+using WebBuySource.Models;
+using WebBuySource.Uow;
 using WebBuySource.Utilities;
 using WebBuySource.Utilities.Constants;
 using WebBuySource.Utilities.Helpers;
@@ -15,10 +18,14 @@ namespace WebBuySource.Services
     {
         private readonly IMemoryCache _cache;
         private readonly IConfiguration _config;
+        private readonly IUnitOfWork UnitOfWork;
+        private IRepository<User> UserRepository => UnitOfWork.UserRepository;
 
-        public EmailService(IMemoryCache cache, IConfiguration config)
+        public EmailService(IMemoryCache cache, IConfiguration config, IUnitOfWork unitOfWork)
         {
-            _config = config; _cache = cache;
+            _config = config;
+            _cache = cache;
+            UnitOfWork = unitOfWork;
 
         }
 
@@ -97,22 +104,38 @@ namespace WebBuySource.Services
         /// <summary>
         /// Verifies that the user-provided OTP matches the cached value.
         /// </summary>
-        public Task<BaseAPIResponse> VerifyOtp(VerifyOtpRequestDTO request)
+        public async Task<BaseAPIResponse> VerifyOtp(VerifyOtpRequestDTO request)
         {
             if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Otp))
-                return Task.FromResult(BaseApiResponse.Error(MessageConstants.InvalidRequest));
+                return BaseApiResponse.Error(MessageConstants.InvalidRequest);
+
             // Try to retrieve the OTP from cache
             if (!_cache.TryGetValue(request.Email, out string? cachedOtp))
-                return Task.FromResult(BaseApiResponse.Error(MessageConstants.OtpExpiredOrMissing));
+                return BaseApiResponse.Error(MessageConstants.OtpExpiredOrMissing);
 
             // Compare provided OTP with cached one
             if (cachedOtp != request.Otp)
-                return Task.FromResult(BaseApiResponse.Error(MessageConstants.OtpInvalid));
+                return BaseApiResponse.Error(MessageConstants.OtpInvalid);
 
             // Remove OTP from cache once it's successfully verified
             _cache.Remove(request.Email);
-            return Task.FromResult(BaseApiResponse.OK(MessageConstants.OtpVerified));
+
+            // 🔹 Update IsVerified = true in database
+            var user = await UserRepository.GetAll()
+                .FirstOrDefaultAsync(u => u.Email == request.Email);
+
+            if (user == null)
+                return BaseApiResponse.NotFound(MessageConstants.USER_NOT_FOUND);
+
+            user.IsVerified = true;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            await UserRepository.UpdateAsync(user);
+            await UserRepository.SaveChangesAsync();
+
+            return BaseApiResponse.OK(MessageConstants.OtpVerified);
         }
+
 
     }
 }

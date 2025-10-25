@@ -115,7 +115,7 @@ namespace WebBuySource.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         /// 
-        [HttpPost("Logout")]
+        [HttpPost("logout")]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)]

@@ -89,6 +89,18 @@ namespace WebBuySource.Data
         {
             DbSet.UpdateRange(obj);
         }
+
+        /// <summary>
+        /// Update entity to database async.
+        /// </summary>
+        /// <param name="obj">The entity to update.</param>
+        /// <returns>Task complete.</returns>
+        public async Task UpdateAsync(TEntity obj)
+        {
+            DbSet.Update(obj);
+            await Db.SaveChangesAsync().ConfigureAwait(false);
+        }
+
         #endregion
 
         #region Remove entity.
@@ -96,7 +108,7 @@ namespace WebBuySource.Data
         /// Remove single entity with Id.
         /// </summary>
         /// <param name="id">The entity to remove.</param>
-        public void Remove(Guid id)
+        public void Remove(string id)
         {
             DbSet.Remove(DbSet.Find(id));
         }
@@ -105,7 +117,7 @@ namespace WebBuySource.Data
         /// Remove multiple entity with multiple Id.
         /// </summary>
         /// <param name="id">The entites to remove.</param>
-        public void RemoveRange(IEnumerable<Guid> id)
+        public void RemoveRange(IEnumerable<string> id)
         {
             DbSet.RemoveRange(DbSet.Find(id));
         }
@@ -117,7 +129,7 @@ namespace WebBuySource.Data
         /// </summary>
         /// <param name="id">The entity Id.</param>
         /// <returns>The entity found, or null.</returns>
-        public TEntity GetById(Guid id)
+        public TEntity GetById(string id)
         {
             return DbSet.Find(id);
         }
@@ -127,7 +139,7 @@ namespace WebBuySource.Data
         /// </summary>
         /// <param name="id">The entity Id.</param>
         /// <returns>The entity found, or null.</returns>
-        public async Task<TEntity> GetByIdAsync(Guid id)
+        public async Task<TEntity> GetByIdAsync(string id)
         {
             return await DbSet.FindAsync(id).ConfigureAwait(false);
         }
@@ -373,6 +385,8 @@ namespace WebBuySource.Data
             Db.Dispose();
             GC.SuppressFinalize(this);
         }
+
+        
         #endregion
 
     }
