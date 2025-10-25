@@ -2,7 +2,7 @@
 
 namespace WebBuySource.Dto.Response.CategoryResponse
 {
-    public class CategoryResponse
+    public class CategoryResponse :BaseAPIResponse
     {
 
         /// <summary>
@@ -19,7 +19,17 @@ namespace WebBuySource.Dto.Response.CategoryResponse
         [JsonPropertyName("category_name")]
         public string Name { get; set; }
 
-        [JsonPropertyName("category_Dis")]
+        /// <summary>
+        /// description
+        /// </summary>
+        [JsonPropertyName("category_dis")]
         public string Description { get; set; }
+
+        /// <summary>
+        /// ParentId
+        /// </summary>
+        /// 
+        [JsonPropertyName("category_darentId")]
+        public int? ParentId { get; set; }
     }
 }

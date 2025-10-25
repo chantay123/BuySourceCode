@@ -12,7 +12,15 @@ namespace WebBuySource.Interfaces
         /// </summary>
         /// <param name="user">User information used to create the token.</param>
         /// <returns>JWT token string.</returns>
-        string GenerateToken(User user);
+        string GenerateAccessToken(User user);
+
+
+        /// <summary>
+        /// Generates a JWT refres token for a given user.
+        /// </summary>
+        /// <param name="user">User information used to create the token.</param>
+        /// <returns>JWT token string.</returns>
+        string GenerateRefreshToken(User user);
 
         /// <summary>
         /// Registers a new user account.

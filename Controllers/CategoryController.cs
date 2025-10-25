@@ -1,76 +1,86 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using WebBuySource.Dto.Request;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using WebBuySource.Dto.Request.Category;
 using WebBuySource.Dto.Response;
 using WebBuySource.Interfaces;
 
 namespace WebBuySource.Controllers
 {
-
     [ApiController]
     [Route("api/v1/category")]
-
-    public class CategoryController : Controller
+    //[Authorize(Roles = "Admin")] 
+    public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
 
-        # region Contructor
+        #region Constructor
         public CategoryController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
         }
         #endregion
-         
-        /// <returns></returns>
+
         /// <summary>
-        ///.
+        /// Retrieve all categories (with pagination).
         /// </summary>
-        /// <param name="Get ">Condition to get all notify.</param>
-        /// <returns>The requested attchment of current user.</returns>
-        /// <response code="200">The Product  was successfully retrieved.</response>
-        /// <response code="400">The Product  is invalid.</response>
-        /// <response code="401">The Product   user not have permission to access this function.</response>
+        /// <remarks>Only accessible by users with the Admin role.</remarks>
         [HttpGet]
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status409Conflict)]
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status401Unauthorized)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status403Forbidden)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)] 
         public async Task<BaseAPIResponse> GetAllCategory([FromQuery] CategoryRequestDTO request)
         {
-            // Call get all Attachment of current user.
             return await _categoryService.GetAllCategory(request);
         }
 
-        /// <returns></returns>
         /// <summary>
-        /// Get Product .
+        /// Create a new category.
         /// </summary>
-        /// <param name="Get ">Condition to get all notify.</param>
-        /// <returns>The requested attchment of current user.</returns>
-        /// <response code="200">The Product  was successfully retrieved.</response>
-        /// <response code="400">The Product  is invalid.</response>
-        /// <response code="401">The Product   user not have permission to access this function.</response>
-     //   [HttpPost]
-    //    public async Task<BaseAPIResponse> AddCategory([FromBody] CategoryRequestDTO input)
-    //    {
-    //        // Call Add Category.
-    //        return await _categoryService.AddCategory(input);
-    //    }
+        /// <remarks>Requires Admin role. Returns the created category information.</remarks>
+        [HttpPost]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status201Created)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status401Unauthorized)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status403Forbidden)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status409Conflict)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)] 
+        public async Task<BaseAPIResponse> AddCategory([FromBody] CategoryRequestDTO input)
+        {
+            return await _categoryService.AddCategory(input);
+        }
 
-    //    /// <returns></returns>
-    //    /// <summary>
-    //    /// Get Product .
-    //    /// </summary>
-    //    /// <param name="Get ">Condition to get all notify.</param>
-    //    /// <returns>The requested attchment of current user.</returns>
-    //    /// <response code="200">The Product  was successfully retrieved.</response>
-    //    /// <response code="400">The Product  is invalid.</response>
-    //    /// <response code="401">The Product   user not have permission to access this function.</response>
-    //    [HttpPut]
-    //    public async Task<BaseAPIResponse> UpdateCategory([FromBody] CategoryRequestDTO request)
-    //    {
-    //        // Call update Category.
-    //        return await _categoryService.UpdateCategory(request);
-    //    }
+        /// <summary>
+        /// Update an existing category.
+        /// </summary>
+        /// <remarks>Requires Admin role. Updates category information by ID.</remarks>
+        [HttpPut]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status401Unauthorized)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status403Forbidden)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status404NotFound)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)] 
+        public async Task<BaseAPIResponse> UpdateCategory([FromBody] CategoryRequestDTO request)
+        {
+            return await _categoryService.UpdateCategory(request);
+        }
 
+        /// <summary>
+        /// Delete a category by its ID.
+        /// </summary>
+        /// <remarks>Requires Admin role. Permanently removes the category.</remarks>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status401Unauthorized)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status403Forbidden)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status404NotFound)] 
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)] 
+        public async Task<BaseAPIResponse> DeleteCategory(string id)
+        {
+            return await _categoryService.DeleteCategory(id);
+        }
     }
 }

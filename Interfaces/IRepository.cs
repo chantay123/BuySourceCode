@@ -40,6 +40,13 @@ namespace WebBuySource.Interfaces
         /// </summary>
         /// <param name="obj">The entities to update.</param>
         void UpdateRange(IEnumerable<TEntity> obj);
+
+        /// <summary>
+        /// Update entity to database async.
+        /// </summary>
+        /// <param name="obj">The entity to update.</param>
+        /// <returns>Task complete.</returns>
+        Task UpdateAsync(TEntity obj);
         #endregion
 
         #region Remove entity.
@@ -47,12 +54,12 @@ namespace WebBuySource.Interfaces
         /// Remove single entity with Id.
         /// </summary>
         /// <param name="id">The entity to remove.</param>
-        void Remove(Guid id);
+        void Remove(string id);
         /// <summary>
         /// Remove multiple entity with multiple Id.
         /// </summary>
         /// <param name="id">The entites to remove.</param>
-        void RemoveRange(IEnumerable<Guid> id);
+        void RemoveRange(IEnumerable<String> id);
         #endregion
 
         #region Get entity by Id.
@@ -61,13 +68,13 @@ namespace WebBuySource.Interfaces
         /// </summary>
         /// <param name="id">The entity Id.</param>
         /// <returns>The entity found, or null.</returns>
-        TEntity GetById(Guid id);
+        TEntity GetById(string id);
         /// <summary>
         /// Get entity by Id async.
         /// </summary>
         /// <param name="id">The entity Id.</param>
         /// <returns>The entity found, or null.</returns>
-        Task<TEntity> GetByIdAsync(Guid id);
+        Task<TEntity> GetByIdAsync(string id);
         #endregion
 
         #region Get all entity.

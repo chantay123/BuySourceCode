@@ -1,7 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using WebBuySource.Dto.Request;
 using WebBuySource.Dto.Response;
@@ -61,13 +60,19 @@ namespace WebBuySource.Services
                 Password = hashedPassword,
                 Email = request.Email.Trim(),
                 RoleId = 1, // Default: user
-                PhoneNumber = request.Phone,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
 
             await UserRepository.AddAsync(newUser);
             await UserRepository.SaveChangesAsync();
+
+            ///Sent email 
+            var sendOtpResponse = await _emailService.SendOtp(new SendOtpRequestDTO
+            {
+                Email = request.Email
+            });
+
 
             return BaseApiResponse.OK(new
             {
@@ -97,8 +102,8 @@ namespace WebBuySource.Services
                 return BaseApiResponse.Error(MessageConstants.INVALID_PASSWORD);
 
             // Generate tokens
-            var accessToken = GenerateToken(user);
-            var refreshToken = GenerateToken(user);
+            var accessToken = GenerateAccessToken(user);
+            var refreshToken = GenerateAccessToken(user);
 
             // Store refresh token in DB
             var token = new RefreshToken
@@ -150,36 +155,40 @@ namespace WebBuySource.Services
                 return BaseApiResponse.NotFound(MessageConstants.USER_NOT_FOUND);
 
             // Generate new tokens
-            var newAccessToken = GenerateToken(user);
-            var newRefreshTokenValue = GenerateToken(user);
+            var newAccessToken = GenerateAccessToken(user);
+            var newRefreshToken = GenerateRefreshToken(user);
 
-            // Optional: replace old token
-            existingToken.Token = newRefreshTokenValue;
-            existingToken.ExpiresAt = DateTime.UtcNow.AddDays(7);
-            existingToken.UpdatedAt = DateTime.UtcNow;
+            var token = new RefreshToken
+            {
+                Token = newRefreshToken,
+                UserId = user.Id,
+                ExpiresAt = DateTime.UtcNow.AddDays(7),
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
 
             await RefreshTokenRepository.SaveChangesAsync();
 
             return BaseApiResponse.OK(new AuthResponseDTO
             {
                 AccessToken = newAccessToken,
-                RefreshToken = newRefreshTokenValue
+                RefreshToken = newRefreshToken,
             }, MessageConstants.NEW_ACCESS_TOKEN_ISSUED);
         }
         #endregion
 
-        #region Token generation
+      
         /// <summary>
-        /// Generates a signed JWT access token.
+        /// GenerateAccessToken 
         /// </summary>
-        public string GenerateToken(User user)
+        #region Generate Access Token
+        public string GenerateAccessToken(User user)
         {
-            var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? _config["Jwt:Key"];
-            var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? _config["Jwt:Issuer"];
-            var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? _config["Jwt:Audience"];
-            var jwtExpireMinutes = Environment.GetEnvironmentVariable("JWT_EXPIRE_MINUTES") ?? "60";
-
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+            var jwtAccessKey = Environment.GetEnvironmentVariable("JWT_ACCESS_KEY") ;
+            var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ;
+            var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ;
+            var jwtExpireMinutes = Environment.GetEnvironmentVariable("JWT_ACCESS_EXPIRE_MINUTES");
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAccessKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var now = DateTime.UtcNow;
@@ -190,8 +199,10 @@ namespace WebBuySource.Services
                 new Claim(JwtRegisteredClaimNames.Sub, user.Username),
                 new Claim("id", user.Id.ToString()),
                 new Claim("name", user.Fullname ?? string.Empty),
+                new Claim ("email",user.Email.ToString()),
+                new Claim(ClaimTypes.Role, "User"),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
+             };
 
             var token = new JwtSecurityToken(
                 issuer: jwtIssuer,
@@ -279,7 +290,44 @@ namespace WebBuySource.Services
             return BaseApiResponse.OK(MessageConstants.RESET_PASSWORD_SUCCESS);
         }
 
-       
 
+
+        #region Generate Refresh Token
+        /// <summary>
+        /// GenerateRefreshToken
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public string GenerateRefreshToken(User user)
+        {
+            var jwtRefreshKey = Environment.GetEnvironmentVariable("JWT_REFRESH_KEY");
+            var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
+            var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+            var jwtExpireDays = Environment.GetEnvironmentVariable("JWT_REFRESH_EXPIRE_DAYS"); 
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtRefreshKey));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var now = DateTime.UtcNow;
+            var expires = now.AddDays(Convert.ToInt32(jwtExpireDays));
+
+            var claims = new[]
+            {
+                new Claim("id", user.Id.ToString()),
+                new Claim ("email",user.Email.ToString()),
+                new Claim ("username",user.Fullname.ToString()),
+               
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+             };
+
+            var token = new JwtSecurityToken(
+                issuer: jwtIssuer,
+                audience: jwtAudience,
+                claims: claims,
+                expires: expires,
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+        #endregion
     }
 }
