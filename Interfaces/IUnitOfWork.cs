@@ -11,6 +11,8 @@ namespace WebBuySource.Interfaces
 
         IRepository<RefreshToken>RefreshTokenRepository { get; }
 
+        IRepository<VerificationCode> VerificationCodeRepository { get; }
+
         bool Commit();
     }
 }

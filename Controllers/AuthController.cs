@@ -157,5 +157,16 @@ namespace WebBuySource.Controllers
         {
             return await _jwtService.ResetPassword(request);
         }
+
+        [HttpPost("change-password")]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<BaseAPIResponse> ChangePassword([FromBody] ChangePasswordRequestDTO request, int userId)
+        {
+            return await _jwtService.ChangePassword(request,userId);
+        }
     }
 }
