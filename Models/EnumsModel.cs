@@ -1,8 +1,6 @@
 ﻿namespace WebBuySource.Models.Enums
 {
-    public enum Gender { MALE, FEMALE, OTHER,
-        Male
-    }
+    public enum Gender { MALE, FEMALE, OTHER, Male}
     public enum UserStatus { ACTIVE, INACTIVE, BANNED }
     public enum TransactionStatus { PENDING, COMPLETED, FAILED, REFUNDED }
     public enum PayoutStatus { PENDING, PAID, FAILED }
@@ -16,7 +14,7 @@
 
     public enum PromotionDiscountType { PERCENT, FIXED }
 
-    public enum VerificationCodeType { PERCENTAGE, FIXED_AMOUNT }
+    public enum VerificationCodeType { RESET_PASSWORD = 2, REGISTER= 1 }
 
     public enum ConversationStatus { ACTIVE, INACTIVE, EXPIRED }
 

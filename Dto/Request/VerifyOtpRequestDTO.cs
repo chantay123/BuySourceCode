@@ -1,8 +1,12 @@
-﻿namespace WebBuySource.Dto.Request
+﻿using WebBuySource.Models.Enums;
+
+namespace WebBuySource.Dto.Request
 {
     public class VerifyOtpRequestDTO
     {
-        public string Email { get; set; }
-        public string Otp { get; set; }
+        public required string Email { get; set; }
+        public required string Otp { get; set; }
+
+        public VerificationCodeType Type { get; set; }
     }
 }

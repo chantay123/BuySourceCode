@@ -5,7 +5,7 @@
         /// <summary>
         /// Category id
         /// </summary>
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
             
         /// <summary>
@@ -22,7 +22,7 @@
         /// <summary>
         /// Description 
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// PageIndex

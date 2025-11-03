@@ -1,7 +1,11 @@
-﻿namespace WebBuySource.Dto.Request
+﻿using WebBuySource.Models.Enums;
+
+namespace WebBuySource.Dto.Request
 {
     public class SendOtpRequestDTO
     {
         public required string Email { get; set; }
+
+        public VerificationCodeType Type { get; set; }
     }
 }

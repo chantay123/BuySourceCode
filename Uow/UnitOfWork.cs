@@ -54,6 +54,16 @@ namespace WebBuySource.Uow
         }
 
 
+        /// <summary>
+        /// Repository of table VerificationCode (for OTP)
+        /// </summary>
+        private IRepository<VerificationCode> _VerificationCodeRepository;
+
+        public IRepository<VerificationCode> VerificationCodeRepository
+        {
+            get { return _VerificationCodeRepository ??= new Repository<VerificationCode>(_dbContext); }
+        }
+
 
         #region Constructor
         /// <summary>

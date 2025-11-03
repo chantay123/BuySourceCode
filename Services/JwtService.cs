@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -6,6 +7,7 @@ using WebBuySource.Dto.Request;
 using WebBuySource.Dto.Response;
 using WebBuySource.Interfaces;
 using WebBuySource.Models;
+using WebBuySource.Models.Enums;
 using WebBuySource.Utilities;
 using WebBuySource.Utilities.Constants;
 
@@ -70,9 +72,9 @@ namespace WebBuySource.Services
             ///Sent email 
             var sendOtpResponse = await _emailService.SendOtp(new SendOtpRequestDTO
             {
-                Email = request.Email
+                Email = request.Email,
+                Type = VerificationCodeType.REGISTER
             });
-
 
             return BaseApiResponse.OK(new
             {
@@ -257,7 +259,8 @@ namespace WebBuySource.Services
             //  Sent OTP
             var sendOtpResponse = await _emailService.SendOtp(new SendOtpRequestDTO
             {
-                Email = request.Email
+                Email = request.Email,   
+                Type  = VerificationCodeType.RESET_PASSWORD,
             });
 
             return BaseApiResponse.OK(MessageConstants.OtpSentSuccess);
@@ -270,23 +273,40 @@ namespace WebBuySource.Services
         /// <returns></returns>
         public async Task<BaseAPIResponse> ResetPassword(ResetPasswordRequestDTO request)
         {
-            if (string.IsNullOrEmpty(request.Email))
+            if (string.IsNullOrWhiteSpace(request.Email))
                 return BaseApiResponse.Error(MessageConstants.EMAIL_REQUIRED);
+
+            if (string.IsNullOrWhiteSpace(request.Otp))
+                return BaseApiResponse.Error("OTP is required.");
+
+            if (string.IsNullOrWhiteSpace(request.NewPassword) || string.IsNullOrWhiteSpace(request.ConfirmPassword))
+                return BaseApiResponse.Error(MessageConstants.PASSWORD_NOT_MATCH);
 
             if (request.NewPassword != request.ConfirmPassword)
                 return BaseApiResponse.Error(MessageConstants.PASSWORD_NOT_MATCH);
 
-            var user = UserRepository.GetAll().FirstOrDefault(u => u.Email == request.Email);
+            
+            var verifyResp = await _emailService.VerifyOtp(new VerifyOtpRequestDTO
+            {
+                Email = request.Email,
+                Otp = request.Otp,
+                Type = VerificationCodeType.RESET_PASSWORD,
+            });
+
+            // Lấy user và update password
+            var user = await UserRepository.GetAll()
+                .FirstOrDefaultAsync(u => u.Email == request.Email);
+
             if (user == null)
                 return BaseApiResponse.NotFound(MessageConstants.USER_NOT_FOUND);
 
-            // Chage password
             user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
             user.UpdatedAt = DateTime.UtcNow;
 
             UserRepository.Update(user);
             await UserRepository.SaveChangesAsync();
 
+           
             return BaseApiResponse.OK(MessageConstants.RESET_PASSWORD_SUCCESS);
         }
 
@@ -328,6 +348,40 @@ namespace WebBuySource.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+
         #endregion
+
+        public async Task<BaseAPIResponse> ChangePassword(ChangePasswordRequestDTO request , int userId)
+        {
+            if (string.IsNullOrWhiteSpace(request.CurrentPassword) ||
+        string.IsNullOrWhiteSpace(request.NewPassword) ||
+        string.IsNullOrWhiteSpace(request.ConfirmPassword))
+                return BaseApiResponse.Error(MessageConstants.PASSWORD_FIELDS_REQUIRED);
+
+            if (request.NewPassword != request.ConfirmPassword)
+                return BaseApiResponse.Error(MessageConstants.PASSWORD_NOT_MATCH);
+
+            var user = await UserRepository.GetAll().FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+                return BaseApiResponse.Error(MessageConstants.USER_NOT_FOUND);
+
+            // Check old password
+            if (!BCrypt.Net.BCrypt.Verify(request.CurrentPassword, user.Password))
+                return BaseApiResponse.Error(MessageConstants.CURRENT_PASSWORD_INCORRECT);
+
+            // Optional: prevent using the same password
+            if (BCrypt.Net.BCrypt.Verify(request.NewPassword, user.Password))
+                return BaseApiResponse.Error(MessageConstants.PASSWORD_SAME_AS_OLD);
+
+            // Update new password
+            user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            user.UpdatedAt = DateTime.UtcNow;
+
+            await UserRepository.UpdateAsync(user);
+            await UserRepository.SaveChangesAsync();
+
+            return BaseApiResponse.OK(MessageConstants.PASSWORD_CHANGED_SUCCESS);
+        }
     }
 }

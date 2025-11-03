@@ -37,7 +37,7 @@
         public const string OtpVerified = "OTP verification successful.";
         public const string SmtpConfigMissing = "SMTP configuration is missing from environment variables.";
         public const string OtpStillValid = "An OTP has already been sent and is still valid. Please wait until it expires.";
-
+        public const string OtpAlreadyUsed = "Mã OTP này đã được sử dụng.";
         // Category
         public const string CATEGORY_NOT_FOUND = "Category not found";
         public const string INVALID_CATEGORY_ID = "Invalid category ID provided";
@@ -58,5 +58,10 @@
         public const string CategoryNotFound = "Category not found.";
         public const string InvalidCategoryId = "Invalid category ID.";
 
+        ///Change password
+        public const string PASSWORD_CHANGED_SUCCESS = "Your password has been changed successfully.";
+        public const string PASSWORD_FIELDS_REQUIRED = "All password fields are required.";
+        public const string PASSWORD_SAME_AS_OLD = "The new password cannot be the same as the current password.";
+        public const string CURRENT_PASSWORD_INCORRECT = "The current password is incorrect.";
     }
 }

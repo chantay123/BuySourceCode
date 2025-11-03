@@ -66,5 +66,12 @@ namespace WebBuySource.Interfaces
         /// <param name="request"></param>
         /// <returns></returns>
         Task<BaseAPIResponse> ResetPassword(ResetPasswordRequestDTO request);
+
+        /// <summary>
+        /// Change-Password
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<BaseAPIResponse> ChangePassword(ChangePasswordRequestDTO request ,int userId);
     }
 }

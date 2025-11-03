@@ -1,10 +1,11 @@
-﻿using WebBuySource.Dto.Request;
+﻿                                                 
 using WebBuySource.Dto.Response;
 using WebBuySource.Dto.Response.CategoryResponse;
 using WebBuySource.Models;
 using WebBuySource.Interfaces;
 using WebBuySource.Utilities;
 using WebBuySource.Dto.Request.Category;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace WebBuySource.Services
@@ -24,23 +25,17 @@ namespace WebBuySource.Services
         /// </summary>
         public async Task<BaseAPIResponse> GetAllCategory(CategoryRequestDTO request)
         {
-            var query = CategoryRepository.GetAllAsNoTracking();
-
-            var total = query.Count();
-
-            var items = query
-                .Skip((request.PageIndex - 1) * request.PageSize)
-                .Take(request.PageSize)
-                .Select(c => new CategoryResponse
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Description = c.Description ?? string.Empty
-                })
-                .ToList();
+            var items = await CategoryRepository.GetAllAsNoTracking()
+            .Select(c => new CategoryResponse
+            { 
+                Id = c.Id,
+                Name = c.Name,
+                Description = c.Description ?? string.Empty
+            })
+            .ToListAsync();
 
             return BaseApiResponse.OK(items);
-            
+
         }
 
 

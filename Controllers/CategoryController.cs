@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebBuySource.Dto.Request.Category;
 using WebBuySource.Dto.Response;
@@ -25,6 +26,7 @@ namespace WebBuySource.Controllers
         /// </summary>
         /// <remarks>Only accessible by users with the Admin role.</remarks>
         [HttpGet]
+        [Authorize (Roles = "Admin")]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)] 
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)] 
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status401Unauthorized)] 
