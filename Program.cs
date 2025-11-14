@@ -47,6 +47,38 @@ builder.Logging.AddConsole();
 // Add services
 builder.Services.AddControllers();
 
+// memmory cache
+builder.Services.AddMemoryCache();
+
+//Get value form .env
+var jwtAccessKey = Environment.GetEnvironmentVariable("JWT_ACCESS_KEY");
+var jwtRefreshKey = Environment.GetEnvironmentVariable("JWT_REFRESH_KEY");
+var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ;
+var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+
+// Add JWT Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAccessKey)),
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
+builder.Services.AddAuthorization();
+
+
 // Add Swagger and JWT support
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -61,7 +93,7 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
+        Type = SecuritySchemeType.Http,
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
@@ -84,37 +116,6 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-
-// memmory cache
-builder.Services.AddMemoryCache();
-
-//Get value form .env
-var jwtAccessKey = Environment.GetEnvironmentVariable("JWT_ACCESS_KEY");
-var jwtRefreshKey = Environment.GetEnvironmentVariable("JWT_REFRESH_KEY");
-var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ;
-var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
-
-// Add JWT Authentication
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer("Access",options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtIssuer,
-        ValidAudience = jwtAudience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAccessKey)),
-        ClockSkew = TimeSpan.Zero
-    };
-});
-
-builder.Services.AddAuthorization();
 
 ///// cors
 //#region

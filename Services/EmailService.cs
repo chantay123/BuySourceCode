@@ -2,7 +2,7 @@
 using System.Net.Mail;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using WebBuySource.Dto.Request;
+using WebBuySource.Dto.Request.JWT;
 using WebBuySource.Dto.Response;
 using WebBuySource.Interfaces;
 using WebBuySource.Models;

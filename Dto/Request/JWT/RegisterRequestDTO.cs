@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebBuySource.Dto.Request
+namespace WebBuySource.Dto.Request.JWT
 {
     public class RegisterRequestDTO
     {

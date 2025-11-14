@@ -1,6 +1,6 @@
 ﻿using WebBuySource.Models.Enums;
 
-namespace WebBuySource.Dto.Request
+namespace WebBuySource.Dto.Request.JWT
 {
     public class VerifyOtpRequestDTO
     {

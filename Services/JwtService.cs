@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using WebBuySource.Dto.Request;
+using WebBuySource.Dto.Request.JWT;
 using WebBuySource.Dto.Response;
 using WebBuySource.Interfaces;
 using WebBuySource.Models;
@@ -21,6 +22,7 @@ namespace WebBuySource.Services
     {
         #region Repository references
         private IRepository<User> UserRepository => UnitOfWork.UserRepository;
+        private IRepository<Role> RoleRepository => UnitOfWork.RoleRepository;
         private IRepository<RefreshToken> RefreshTokenRepository => UnitOfWork.RefreshTokenRepository;
         #endregion
 
@@ -192,20 +194,20 @@ namespace WebBuySource.Services
             var jwtExpireMinutes = Environment.GetEnvironmentVariable("JWT_ACCESS_EXPIRE_MINUTES");
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAccessKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
             var now = DateTime.UtcNow;
             var expires = now.AddMinutes(Convert.ToInt32(jwtExpireMinutes));
-
+            
+            
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Username),
                 new Claim("id", user.Id.ToString()),
                 new Claim("name", user.Fullname ?? string.Empty),
                 new Claim ("email",user.Email.ToString()),
-                new Claim(ClaimTypes.Role, "User"),
+                new Claim(ClaimTypes.Role, user.Role.ToString() ?? "User"),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
              };
-
+           
             var token = new JwtSecurityToken(
                 issuer: jwtIssuer,
                 audience: jwtAudience,
@@ -355,8 +357,8 @@ namespace WebBuySource.Services
         public async Task<BaseAPIResponse> ChangePassword(ChangePasswordRequestDTO request , int userId)
         {
             if (string.IsNullOrWhiteSpace(request.CurrentPassword) ||
-        string.IsNullOrWhiteSpace(request.NewPassword) ||
-        string.IsNullOrWhiteSpace(request.ConfirmPassword))
+                string.IsNullOrWhiteSpace(request.NewPassword) ||
+                string.IsNullOrWhiteSpace(request.ConfirmPassword))
                 return BaseApiResponse.Error(MessageConstants.PASSWORD_FIELDS_REQUIRED);
 
             if (request.NewPassword != request.ConfirmPassword)

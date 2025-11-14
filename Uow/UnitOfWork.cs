@@ -64,6 +64,16 @@ namespace WebBuySource.Uow
             get { return _VerificationCodeRepository ??= new Repository<VerificationCode>(_dbContext); }
         }
 
+        /// <summary>
+        /// Repository of table Role
+        /// </summary>
+        private IRepository<Role> _RoleRepository;
+
+        public IRepository<Role> RoleRepository
+        {
+            get { return _RoleRepository ??= new Repository<Role>(_dbContext); }
+        }
+
 
         #region Constructor
         /// <summary>

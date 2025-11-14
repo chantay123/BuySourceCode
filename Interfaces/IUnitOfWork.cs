@@ -8,9 +8,8 @@ namespace WebBuySource.Interfaces
         
         IRepository<Category> CategoryRepository { get; }
         IRepository<User> UserRepository { get; }
-
+        IRepository<Role> RoleRepository { get; }
         IRepository<RefreshToken>RefreshTokenRepository { get; }
-
         IRepository<VerificationCode> VerificationCodeRepository { get; }
 
         bool Commit();
