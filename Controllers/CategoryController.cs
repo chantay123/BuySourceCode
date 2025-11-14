@@ -25,13 +25,12 @@ namespace WebBuySource.Controllers
         /// Retrieve all categories (with pagination).
         /// </summary>
         /// <remarks>Only accessible by users with the Admin role.</remarks>
+        /// /// <returns>The requested attchment of current user.</returns>
+        /// <response code="200">The Product  was successfully retrieved.</response>
+        /// <response code="400">The Product  is invalid.</response>
+        /// <response code="401">The Product  user not have permission to access this function.</response>
         [HttpGet]
-        [Authorize (Roles = "Admin")]
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status401Unauthorized)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status403Forbidden)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)] 
+        //[Authorize (Roles = "Admin")]
         public async Task<BaseAPIResponse> GetAllCategory([FromQuery] CategoryRequestDTO request)
         {
             return await _categoryService.GetAllCategory(request);
