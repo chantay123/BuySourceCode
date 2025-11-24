@@ -2,11 +2,15 @@
 {
     public class UserRequestDTO
     {
-        public string? Keyword { get; set; }    // từ khóa search
-        public int Page { get; set; } = 1;      // số trang
-        public int PageSize { get; set; } = 10; // số bản ghi / trang
-        public string? SortBy { get; set; } = "Id";       // cột sort
-        public string? SortDirection { get; set; } = "asc"; // asc / desc
+        public string? Keyword { get; set; }
+        public int Page { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
+        public string? SortBy { get; set; } = "Id";
+        public string? SortDirection { get; set; } = "asc";
         public int? RoleId { get; set; }
+
+        //Avatar
+        public IFormFile? AvatarFile { get; set; }
+        public string? Avatar { get; set; }
     }
 }

@@ -93,9 +93,10 @@ namespace WebBuySource.Services
         /// </summary>
         public async Task<BaseAPIResponse> Login(LoginRequestDTO request)
         {
-            // Find user by email
-            var user = UserRepository.GetAllAsNoTracking()
-                .FirstOrDefault(u => u.Email == request.Email);
+          
+            var user = await UserRepository.GetAllAsNoTracking()
+                .Include(u => u.Role)  
+                .FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (user == null)
                 return BaseApiResponse.NotFound(MessageConstants.USER_NOT_FOUND);
@@ -196,7 +197,7 @@ namespace WebBuySource.Services
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var now = DateTime.UtcNow;
             var expires = now.AddMinutes(Convert.ToInt32(jwtExpireMinutes));
-            
+
             
             var claims = new[]
             {
@@ -204,7 +205,7 @@ namespace WebBuySource.Services
                 new Claim("id", user.Id.ToString()),
                 new Claim("name", user.Fullname ?? string.Empty),
                 new Claim ("email",user.Email.ToString()),
-                new Claim(ClaimTypes.Role, user.Role.ToString() ?? "User"),
+                new Claim(ClaimTypes.Role,user.Role?.Name ?? "User"),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
              };
            
@@ -330,13 +331,16 @@ namespace WebBuySource.Services
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var now = DateTime.UtcNow;
             var expires = now.AddDays(Convert.ToInt32(jwtExpireDays));
+            //var user = UserRepository.GetAllAsNoTracking()
+            //                .Include(u => u.Role) // EF Core Include
+            //                .FirstOrDefault(u => u.Email == request.Email);
 
             var claims = new[]
             {
                 new Claim("id", user.Id.ToString()),
                 new Claim ("email",user.Email.ToString()),
                 new Claim ("username",user.Fullname.ToString()),
-               
+               new Claim(ClaimTypes.Role, user.Role?.Name ?? "User"),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
              };
 

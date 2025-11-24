@@ -11,7 +11,7 @@ namespace WebBuySource.Dto.Response.users
         public string? PhoneNumber { get; set; }
         public Gender? Gender { get; set; }
         public string? Avatar { get; set; }
-        public string RoleName { get; set; } // lấy từ Role.Name
+        public string RoleName { get; set; } 
         public UserStatus Status { get; set; } 
      
     }

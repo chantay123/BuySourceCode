@@ -2,6 +2,8 @@
 using WebBuySource.Dto.Request.users;
 using WebBuySource.Dto.Response;
 using WebBuySource.Interfaces;
+using WebBuySource.Utilities;
+using WebBuySource.Utilities.Constants;
 
 namespace WebBuySource.Controllers
 {
@@ -10,10 +12,12 @@ namespace WebBuySource.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, ICloudinaryService cloudinaryService)
         {
             _userService = userService;
+            _cloudinaryService = cloudinaryService;
         }
 
         /// <summary>
@@ -51,9 +55,41 @@ namespace WebBuySource.Controllers
         /// <response code="404">User not found.</response>
         /// <response code="500">Internal server error.</response>
         [HttpPut]
-        public async Task<BaseAPIResponse> UpdateUser([FromBody] UpdateUserRequestDTO request)
+        public async Task<BaseAPIResponse> UpdateUser([FromQuery] UpdateUserRequestDTO request)
         {
+            // If an avatar file is provided, upload it to Cloudinary
+            if (request.AvatarFile != null)
+            {
+                var uploadResult = await _cloudinaryService.UploadImageAsync(request.AvatarFile);
+
+                // If the upload fails, return the error response immediately
+                if (uploadResult.Success != true)
+                    return uploadResult;
+
+                // Extract the uploaded image URL from the Items object
+                if (uploadResult.Items != null)
+                {
+                    request.Avatar = ((dynamic)uploadResult.Items).Url;
+                }
+            }
+
+            // Call the user service to update the user's data
             return await _userService.UpdateUser(request);
+        }
+
+        /// <summary>
+        /// Upload an avatar image to Cloudinary.
+        /// </summary>
+        /// <remarks>Only accessible by users with the Admin role.</remarks>
+        /// <param name="file">Image file to upload.</param>
+        /// <returns>Uploaded image URL and success message.</returns>
+        /// <response code="200">Image uploaded successfully.</response>
+        /// <response code="400">No file provided.</response>
+        /// <response code="500">Internal server error.</response>
+        [HttpPost("upload-avatar")]
+        public async Task<BaseAPIResponse> UploadAvatar(IFormFile file)
+        {
+            return await _cloudinaryService.UploadImageAsync(file);
         }
 
         /// <summary>
@@ -70,7 +106,5 @@ namespace WebBuySource.Controllers
         {
             return await _userService.DeleteUser(id);
         }
-
-
     }
 }

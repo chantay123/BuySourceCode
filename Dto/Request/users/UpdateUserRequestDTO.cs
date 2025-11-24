@@ -1,4 +1,5 @@
-﻿using WebBuySource.Models.Enums;
+﻿using System.Text.Json.Serialization;
+using WebBuySource.Models.Enums;
 
 namespace WebBuySource.Dto.Request.users
 {
@@ -10,6 +11,18 @@ namespace WebBuySource.Dto.Request.users
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }
         public Gender? Gender { get; set; }
+
+
+        // Avatar
+        /// <summary>
+        /// File to upload as avatar. Leave empty if not changing.
+        /// </summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public IFormFile AvatarFile { get; set; }
+        /// <summary>
+        /// Avatar URL (hidden in Swagger)
+        /// </summary>
+        [JsonIgnore] 
         public string? Avatar { get; set; }
     }
 }
