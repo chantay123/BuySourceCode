@@ -66,5 +66,9 @@
         public const string PASSWORD_FIELDS_REQUIRED = "All password fields are required.";
         public const string PASSWORD_SAME_AS_OLD = "The new password cannot be the same as the current password.";
         public const string CURRENT_PASSWORD_INCORRECT = "The current password is incorrect.";
+
+        // Cloudinary / Image upload
+        public const string NO_FILE_PROVIDED = "No file provided";
+        public const string IMAGE_UPLOADED_SUCCESS = "Image uploaded successfully";
     }
 }

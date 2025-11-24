@@ -30,7 +30,7 @@ namespace WebBuySource.Controllers
         /// <response code="400">The Product  is invalid.</response>
         /// <response code="401">The Product  user not have permission to access this function.</response>
         [HttpGet]
-        //[Authorize (Roles = "Admin")]
+        
         public async Task<BaseAPIResponse> GetAllCategory([FromQuery] CategoryRequestDTO request)
         {
             return await _categoryService.GetAllCategory(request);
@@ -41,6 +41,7 @@ namespace WebBuySource.Controllers
         /// </summary>
         /// <remarks>Requires Admin role. Returns the created category information.</remarks>
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status201Created)] 
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)] 
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status401Unauthorized)] 
