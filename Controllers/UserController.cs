@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WebBuySource.Dto.Request.users;
 using WebBuySource.Dto.Response;
 using WebBuySource.Interfaces;
-using WebBuySource.Utilities;
-using WebBuySource.Utilities.Constants;
 
 namespace WebBuySource.Controllers
 {
@@ -40,6 +39,7 @@ namespace WebBuySource.Controllers
         /// <param name="id">User ID</param>
         /// <returns>User details.</returns>
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<BaseAPIResponse> GetUserById(int id)
         {
             return await _userService.GetUserById(id);
@@ -55,6 +55,7 @@ namespace WebBuySource.Controllers
         /// <response code="404">User not found.</response>
         /// <response code="500">Internal server error.</response>
         [HttpPut]
+        [Authorize]
         public async Task<BaseAPIResponse> UpdateUser([FromQuery] UpdateUserRequestDTO request)
         {
             // If an avatar file is provided, upload it to Cloudinary
@@ -87,6 +88,7 @@ namespace WebBuySource.Controllers
         /// <response code="400">No file provided.</response>
         /// <response code="500">Internal server error.</response>
         [HttpPost("upload-avatar")]
+        [Authorize]
         public async Task<BaseAPIResponse> UploadAvatar(IFormFile file)
         {
             return await _cloudinaryService.UploadImageAsync(file);
@@ -102,6 +104,7 @@ namespace WebBuySource.Controllers
         /// <response code="404">User not found.</response>
         /// <response code="500">Internal server error.</response>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<BaseAPIResponse> DeleteUser(int id)
         {
             return await _userService.DeleteUser(id);
