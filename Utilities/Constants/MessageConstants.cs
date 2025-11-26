@@ -9,7 +9,7 @@
         public const string InvalidRequest = "Invalid request data.";
 
         // Auth
-
+        public const string EMAIL_NOT_VERIFIED = "Your email has not been verified. Please verify before logging in.";
         public const string USER_DELETED_SUCCESS = "User deleted successfully";
         public const string USER_UPDATED_SUCCESS = "User updated successfully";
         public const string USER_NOT_FOUND = "User not found";

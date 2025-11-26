@@ -2,6 +2,7 @@
 using WebBuySource.Dto.Response;
 using WebBuySource.Interfaces;
 using WebBuySource.Dto.Request.JWT;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebBuySource.Controllers
 {
@@ -159,6 +160,7 @@ namespace WebBuySource.Controllers
         }
 
         [HttpPost("change-password")]
+        [Authorize]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)]

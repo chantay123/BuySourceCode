@@ -101,6 +101,10 @@ namespace WebBuySource.Services
             if (user == null)
                 return BaseApiResponse.NotFound(MessageConstants.USER_NOT_FOUND);
 
+            /// User not verified
+            if (!user.IsVerified)
+                return BaseApiResponse.Error(MessageConstants.EMAIL_NOT_VERIFIED);
+
             // Verify password
             bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
             if (!isPasswordValid)
@@ -153,7 +157,7 @@ namespace WebBuySource.Services
             }
 
             // Get related user
-            var user = UserRepository.GetAll()
+            var user = UserRepository.GetAllAsNoTracking()
                 .FirstOrDefault(u => u.Id == existingToken.UserId);
 
             if (user == null)
