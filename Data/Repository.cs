@@ -129,7 +129,7 @@ namespace WebBuySource.Data
         /// </summary>
         /// <param name="id">The entity Id.</param>
         /// <returns>The entity found, or null.</returns>
-        public TEntity GetById(string id)
+        public TEntity GetById(int id)
         {
             return DbSet.Find(id);
         }
@@ -139,7 +139,7 @@ namespace WebBuySource.Data
         /// </summary>
         /// <param name="id">The entity Id.</param>
         /// <returns>The entity found, or null.</returns>
-        public async Task<TEntity> GetByIdAsync(string id)
+        public async Task<TEntity> GetByIdAsync(int id)
         {
             return await DbSet.FindAsync(id).ConfigureAwait(false);
         }

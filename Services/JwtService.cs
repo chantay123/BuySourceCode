@@ -22,7 +22,7 @@ namespace WebBuySource.Services
     {
         #region Repository references
         private IRepository<User> UserRepository => UnitOfWork.UserRepository;
-        private IRepository<Role> RoleRepository => UnitOfWork.RoleRepository;
+
         private IRepository<RefreshToken> RefreshTokenRepository => UnitOfWork.RefreshTokenRepository;
         #endregion
 
@@ -42,14 +42,17 @@ namespace WebBuySource.Services
         /// </summary>
         public async Task<BaseAPIResponse> Register(RegisterRequestDTO request)
         {
+            // Check for existing user
+            var existingUser = await UserRepository.GetAllAsNoTracking()
+                                     .Where(u => u.Email == request.Email)
+                                     .Select(u => new { u.Id }) 
+                                     .FirstOrDefaultAsync();
+
             // Validate password confirmation
             if (request.Password != request.ConfirmPassword)
                 return BaseApiResponse.Error(MessageConstants.PASSWORD_NOT_MATCH);
 
-            // Check for existing user
-            var existingUser = UserRepository.GetAllAsNoTracking()
-                .FirstOrDefault(u => u.Email == request.Email);
-
+            // Check user exist
             if (existingUser != null)
                 return BaseApiResponse.Error(MessageConstants.USERNAME_OR_EMAIL_EXISTS);
 
@@ -68,6 +71,7 @@ namespace WebBuySource.Services
                 UpdatedAt = DateTime.UtcNow
             };
 
+            //
             await UserRepository.AddAsync(newUser);
             await UserRepository.SaveChangesAsync();
 
@@ -235,7 +239,7 @@ namespace WebBuySource.Services
             if (string.IsNullOrEmpty(request.RefreshToken))
                 return BaseApiResponse.Error(MessageConstants.REFRESH_TOKEN_REQUIRED);
 
-            var existingToken = RefreshTokenRepository.GetAll()
+            var existingToken = RefreshTokenRepository.GetAllAsNoTracking()
                 .FirstOrDefault(rt => rt.Token == request.RefreshToken);
 
             if (existingToken == null)
@@ -301,7 +305,7 @@ namespace WebBuySource.Services
             });
 
             // Lấy user và update password
-            var user = await UserRepository.GetAll()
+            var user = await UserRepository.GetAllAsNoTracking()
                 .FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (user == null)

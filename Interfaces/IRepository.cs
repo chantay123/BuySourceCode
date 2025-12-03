@@ -68,13 +68,13 @@ namespace WebBuySource.Interfaces
         /// </summary>
         /// <param name="id">The entity Id.</param>
         /// <returns>The entity found, or null.</returns>
-        TEntity GetById(string id);
+        TEntity GetById(int id);
         /// <summary>
         /// Get entity by Id async.
         /// </summary>
         /// <param name="id">The entity Id.</param>
         /// <returns>The entity found, or null.</returns>
-        Task<TEntity> GetByIdAsync(string id);
+        Task<TEntity> GetByIdAsync(int id);
         #endregion
 
         #region Get all entity.

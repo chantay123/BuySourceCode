@@ -5,7 +5,7 @@
         /// <summary>
         /// Category id
         /// </summary>
-        public string? Id { get; set; }
+        public  int Id { get; set; }
 
             
         /// <summary>
@@ -13,7 +13,10 @@
         /// </summary>
         public string? Name { get; set; }
 
-
+        /// <summary>
+        /// ImageURl
+        /// </summary>
+        public string? ImageUrl { get; set; }   
         /// <summary>
         ///Parent
         /// </summary>

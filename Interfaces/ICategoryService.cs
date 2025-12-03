@@ -30,6 +30,6 @@ namespace WebBuySource.Interfaces
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        Task<BaseAPIResponse> DeleteCategory(string Id);
+        Task<BaseAPIResponse> DeleteCategory(int Id);
     }
 }

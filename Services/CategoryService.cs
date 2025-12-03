@@ -30,7 +30,8 @@ namespace WebBuySource.Services
             { 
                 Id = c.Id,
                 Name = c.Name,
-                Description = c.Description ?? string.Empty
+                Description = c.Description ?? string.Empty,
+                ImageUrl = c.ImageUrl
             })
             .ToListAsync();
 
@@ -51,7 +52,8 @@ namespace WebBuySource.Services
             {
                 Name = input.Name,
                 Description = input.Description,
-                ParentId = input.ParentId
+                ParentId = input.ParentId,
+                ImageUrl = input.ImageUrl
             };
 
             await CategoryRepository.AddAsync(newCategory);
@@ -61,8 +63,9 @@ namespace WebBuySource.Services
             {
                 Id = newCategory.Id,
                 Name = newCategory.Name,
-                Description = newCategory.Description ?? string.Empty
-            };
+                Description = newCategory.Description ?? string.Empty,
+                ImageUrl = newCategory.ImageUrl 
+            }; 
 
             return BaseApiResponse.OK(response, "Category created successfully.");
         }
@@ -97,10 +100,9 @@ namespace WebBuySource.Services
         /// <summary>
         /// Delete a category by ID
         /// </summary>
-        public async Task<BaseAPIResponse> DeleteCategory(string id)
+        public async Task<BaseAPIResponse> DeleteCategory(int id)
         {
-            if (!int.TryParse(id, out int categoryId))
-                return BaseApiResponse.Error("Invalid category ID.");
+          
 
             var category = await CategoryRepository.GetByIdAsync(id);
             if (category == null)
