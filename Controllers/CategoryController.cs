@@ -80,7 +80,7 @@ namespace WebBuySource.Controllers
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status403Forbidden)] 
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status404NotFound)] 
         [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)] 
-        public async Task<BaseAPIResponse> DeleteCategory(string id)
+        public async Task<BaseAPIResponse> DeleteCategory(int id)
         {
             return await _categoryService.DeleteCategory(id);
         }

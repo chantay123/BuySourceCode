@@ -2,28 +2,33 @@
 
 namespace WebBuySource.Dto.Response.CategoryResponse
 {
-    public class CategoryResponse :BaseAPIResponse
+    public class CategoryResponse
     {
 
         /// <summary>
         /// Category id
         /// </summary>
         ///  
-        [JsonPropertyName("category_id")]
-        public int Id { get; set; }
+        [JsonPropertyName("categoryId")]
+        public int? Id { get; set; }
 
         /// <summary>
         /// Category Name
         /// </summary>
         /// 
-        [JsonPropertyName("category_name")]
-        public string Name { get; set; }
+        [JsonPropertyName("categoryName")]
+        public required string Name { get; set; }
 
         /// <summary>
         /// description
         /// </summary>
-        [JsonPropertyName("category_dis")]
-        public string Description { get; set; }
+        [JsonPropertyName("categoryDis")]
+        public string? Description { get; set; }
+        /// <summary>
+        /// description
+        /// </summary>
+        [JsonPropertyName("ImagerURL")]
+        public string? ImageUrl { get; set; }
 
         /// <summary>
         /// ParentId

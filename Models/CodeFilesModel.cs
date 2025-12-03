@@ -13,12 +13,12 @@ namespace WebBuySource.Models
         public Code Code { get; set; }
 
         [Required, MaxLength(500)]
-        public string FileUrl { get; set; }
+        public string? FileUrl { get; set; }
 
         public long? FileSize { get; set; }
 
         [Required, MaxLength(50)]
-        public string Version { get; set; }
+        public string? Version { get; set; }
 
         public bool IsCurrent { get; set; } = true;
 
