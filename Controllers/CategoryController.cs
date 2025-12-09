@@ -9,7 +9,7 @@ namespace WebBuySource.Controllers
 {
     [ApiController]
     [Route("api/v1/category")]
-    //[Authorize(Roles = "Admin")] 
+    [Authorize()] 
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -30,7 +30,7 @@ namespace WebBuySource.Controllers
         /// <response code="400">The Product  is invalid.</response>
         /// <response code="401">The Product  user not have permission to access this function.</response>
         [HttpGet]
-        
+        [Authorize()]
         public async Task<BaseAPIResponse> GetAllCategory([FromQuery] CategoryRequestDTO request)
         {
             return await _categoryService.GetAllCategory(request);
@@ -42,12 +42,15 @@ namespace WebBuySource.Controllers
         /// <remarks>Requires Admin role. Returns the created category information.</remarks>
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status201Created)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status401Unauthorized)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status403Forbidden)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status409Conflict)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)] 
+
+        /// <summary>
+        /// Retrieve all categories (with pagination).
+        /// </summary>
+        /// <remarks>Only accessible by users with the Admin role.</remarks>
+        /// /// <returns>The requested attchment of current user.</returns>
+        /// <response code="200">The Product  was successfully retrieved.</response>
+        /// <response code="400">The Product  is invalid.</response>
+        /// <response code="401">The Product  user not have permission to access this function.</response>
         public async Task<BaseAPIResponse> AddCategory([FromBody] CategoryRequestDTO input)
         {
             return await _categoryService.AddCategory(input);
@@ -58,12 +61,15 @@ namespace WebBuySource.Controllers
         /// </summary>
         /// <remarks>Requires Admin role. Updates category information by ID.</remarks>
         [HttpPut]
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status401Unauthorized)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status403Forbidden)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status404NotFound)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)] 
+
+        /// <summary>
+        /// Retrieve all categories (with pagination).
+        /// </summary>
+        /// <remarks>Only accessible by users with the Admin role.</remarks>
+        /// /// <returns>The requested attchment of current user.</returns>
+        /// <response code="200">The Product  was successfully retrieved.</response>
+        /// <response code="400">The Product  is invalid.</response>
+        /// <response code="401">The Product  user not have permission to access this function.</response>
         public async Task<BaseAPIResponse> UpdateCategory([FromBody] CategoryRequestDTO request)
         {
             return await _categoryService.UpdateCategory(request);
@@ -74,12 +80,16 @@ namespace WebBuySource.Controllers
         /// </summary>
         /// <remarks>Requires Admin role. Permanently removes the category.</remarks>
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status200OK)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status400BadRequest)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status401Unauthorized)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status403Forbidden)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status404NotFound)] 
-        [ProducesResponseType(typeof(BaseAPIResponse), StatusCodes.Status500InternalServerError)] 
+        [Authorize(Roles = "Admin")]
+
+        /// <summary>
+        /// Retrieve all categories (with pagination).
+        /// </summary>
+        /// <remarks>Only accessible by users with the Admin role.</remarks>
+        /// /// <returns>The requested attchment of current user.</returns>
+        /// <response code="200">The Product  was successfully retrieved.</response>
+        /// <response code="400">The Product  is invalid.</response>
+        /// <response code="401">The Product  user not have permission to access this function.</response>
         public async Task<BaseAPIResponse> DeleteCategory(int id)
         {
             return await _categoryService.DeleteCategory(id);

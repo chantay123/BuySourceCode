@@ -4,7 +4,7 @@ namespace WebBuySource.Dto.Response.users
 {
     public class UserResponseDTO
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string Username { get; set; }
         public string Fullname { get; set; }
         public string Email { get; set; }
