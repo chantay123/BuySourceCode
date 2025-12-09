@@ -49,6 +49,13 @@ namespace WebBuySource.Uow
         public IRepository<Role> RoleRepository =>
             _RoleRepository ??= new Repository<Role>(_dbContext);
 
+        /// <summary>
+        /// Repository of table Code 
+        /// </summary>
+        private IRepository<Code>? _CodeRepository;
+
+        public IRepository<Code> CodeRepository => _CodeRepository ??= new Repository<Code>(_dbContext);    
+
         #region Constructor
         public UnitOfWork(ApplicationDbContext appDbContext)
         {
@@ -56,7 +63,7 @@ namespace WebBuySource.Uow
         }
         #endregion
 
-        #region Commit
+        #region Commit  
         public bool Commit()
         {
             return _dbContext.SaveChanges() > 0;

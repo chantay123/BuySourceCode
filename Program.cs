@@ -43,6 +43,7 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IUserService , UserService >();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+builder.Services.AddTransient<ICodeService, CodeService>();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();

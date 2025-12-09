@@ -102,8 +102,7 @@ namespace WebBuySource.Services
         /// </summary>
         public async Task<BaseAPIResponse> DeleteCategory(int id)
         {
-          
-
+         
             var category = await CategoryRepository.GetByIdAsync(id);
             if (category == null)
                 return BaseApiResponse.NotFound("Category not found.");
