@@ -44,6 +44,7 @@ builder.Services.AddScoped<IUserService , UserService >();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddTransient<ICodeService, CodeService>();
+builder.Services.AddTransient<ICodeFileService, CodeFileService>();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();

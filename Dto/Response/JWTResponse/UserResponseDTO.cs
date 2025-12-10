@@ -1,6 +1,6 @@
 ﻿using WebBuySource.Models.Enums;
 
-namespace WebBuySource.Dto.Response
+namespace WebBuySource.Dto.Response.JWTResponse
 {
     public class UserResponseDTO
     {
@@ -11,6 +11,6 @@ namespace WebBuySource.Dto.Response
         public string? PhoneNumber { get; set; }
         public Gender? Gender { get; set; }
         public string? Avatar { get; set; }
-        
+
     }
 }

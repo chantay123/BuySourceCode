@@ -54,9 +54,34 @@ namespace WebBuySource.Uow
         /// </summary>
         private IRepository<Code>? _CodeRepository;
 
-        public IRepository<Code> CodeRepository => _CodeRepository ??= new Repository<Code>(_dbContext);    
+        public IRepository<Code> CodeRepository => _CodeRepository ??= new Repository<Code>(_dbContext);
+
+
+        /// <summary>
+        /// Repository of table CodeFile  
+        /// </summary>
+        private IRepository<CodeFile>? _CodeFileRepository;
+
+        public IRepository<CodeFile> CodeFileRepository => _CodeFileRepository ??= new Repository<CodeFile>(_dbContext);
+
+
+        /// <summary>
+        /// Repository of table CodeTag
+        /// </summary>
+        private IRepository<CodeTag>? _CodeTagRepository;
+
+        public IRepository<CodeTag> CodeTagRepository => _CodeTagRepository ??= new Repository<CodeTag>(_dbContext);
+
+        /// <summary>
+        /// Repository of table  RolePermission
+        /// </summary>
+        private IRepository<RolePermission>? _RolePermissionRepository;
+
+        public IRepository<RolePermission> RolePermissionRepository => _RolePermissionRepository ??= new Repository<RolePermission>(_dbContext);
+
 
         #region Constructor
+
         public UnitOfWork(ApplicationDbContext appDbContext)
         {
             _dbContext = appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));

@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using WebBuySource.Dto.Request;
 using WebBuySource.Dto.Request.JWT;
-using WebBuySource.Dto.Response;
+using WebBuySource.Dto.Response.JWTResponse;
 using WebBuySource.Interfaces;
 using WebBuySource.Models;
 using WebBuySource.Models.Enums;

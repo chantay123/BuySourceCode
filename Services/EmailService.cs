@@ -3,7 +3,7 @@ using System.Net.Mail;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using WebBuySource.Dto.Request.JWT;
-using WebBuySource.Dto.Response;
+using WebBuySource.Dto.Response.JWTResponse;
 using WebBuySource.Interfaces;
 using WebBuySource.Models;
 using WebBuySource.Models.Enums;
