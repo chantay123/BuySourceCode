@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebBuySource.Dto.Request.users;
-using WebBuySource.Dto.Response;
+using WebBuySource.Dto.Response.JWTResponse;
 using WebBuySource.Interfaces;
 
 namespace WebBuySource.Controllers

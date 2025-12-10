@@ -1,4 +1,4 @@
-﻿using WebBuySource.Dto.Response;
+﻿using WebBuySource.Dto.Response.JWTResponse;
 
 namespace WebBuySource.Interfaces
 {
