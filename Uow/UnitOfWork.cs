@@ -61,7 +61,6 @@ namespace WebBuySource.Uow
         /// Repository of table CodeFile  
         /// </summary>
         private IRepository<CodeFile>? _CodeFileRepository;
-
         public IRepository<CodeFile> CodeFileRepository => _CodeFileRepository ??= new Repository<CodeFile>(_dbContext);
 
 
@@ -69,16 +68,19 @@ namespace WebBuySource.Uow
         /// Repository of table CodeTag
         /// </summary>
         private IRepository<CodeTag>? _CodeTagRepository;
-
         public IRepository<CodeTag> CodeTagRepository => _CodeTagRepository ??= new Repository<CodeTag>(_dbContext);
 
         /// <summary>
         /// Repository of table  RolePermission
         /// </summary>
         private IRepository<RolePermission>? _RolePermissionRepository;
-
         public IRepository<RolePermission> RolePermissionRepository => _RolePermissionRepository ??= new Repository<RolePermission>(_dbContext);
 
+        /// <summary>
+        /// Repository of table Tag
+        /// </summary>
+        private IRepository<Tag>? _TagRepository;
+        public IRepository<Tag> TagRepository => _TagRepository ??= new Repository<Tag>(_dbContext);
 
         #region Constructor
 

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace WebBuySource.Dto.Response.JWTResponse
+namespace WebBuySource.Dto.Response
 {
     /// <summary>
     /// Base API response class used across the system.

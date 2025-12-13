@@ -4,7 +4,7 @@ using WebBuySource.Interfaces;
 using WebBuySource.Utilities;
 using WebBuySource.Dto.Request.Category;
 using Microsoft.EntityFrameworkCore;
-using WebBuySource.Dto.Response.JWTResponse;
+using WebBuySource.Dto.Response;
 
 
 namespace WebBuySource.Services

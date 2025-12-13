@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebBuySource.Dto.Request.Code;
+using WebBuySource.Dto.Response;
 using WebBuySource.Dto.Response.Code;
-using WebBuySource.Dto.Response.JWTResponse;
 using WebBuySource.Interfaces;
 using WebBuySource.Models;
 using WebBuySource.Utilities;

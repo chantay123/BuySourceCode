@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Sprache;
 using WebBuySource.Dto.Request.CodeFile;
+using WebBuySource.Dto.Response;
 using WebBuySource.Dto.Response.CodeFile;
-using WebBuySource.Dto.Response.JWTResponse;
 using WebBuySource.Interfaces;
 using WebBuySource.Models;
 using WebBuySource.Utilities;
@@ -74,7 +74,7 @@ namespace WebBuySource.Services
             if (file == null)
                 return BaseApiResponse.NotFound("File not found.");
 
-            // Nếu chuyển file này thành bản hiện tại
+            
             if (request.IsCurrent == true)
             {
                 var oldFiles = await CodeFileRepository
