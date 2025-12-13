@@ -18,6 +18,8 @@ namespace WebBuySource.Interfaces
 
         IRepository<RolePermission> RolePermissionRepository { get; }
 
+        IRepository<Tag> TagRepository { get; }
+
 
         bool Commit();
     }

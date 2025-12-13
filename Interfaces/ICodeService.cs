@@ -1,5 +1,5 @@
 ﻿using WebBuySource.Dto.Request.Code;
-using WebBuySource.Dto.Response.JWTResponse;
+using WebBuySource.Dto.Response;
 
 namespace WebBuySource.Interfaces
 {

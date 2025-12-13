@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebBuySource.Dto.Request.CodeFile;
-using WebBuySource.Dto.Response.JWTResponse;
+using WebBuySource.Dto.Response;
 using WebBuySource.Interfaces;
 
 namespace WebBuySource.Controllers
