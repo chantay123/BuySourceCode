@@ -9,7 +9,6 @@ namespace WebBuySource.Controllers
 {
     [ApiController]
     [Route("api/v1/category")]
-    [Authorize()] 
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -30,7 +29,6 @@ namespace WebBuySource.Controllers
         /// <response code="400">The Product  is invalid.</response>
         /// <response code="401">The Product  user not have permission to access this function.</response>
         [HttpGet]
-        [Authorize()]
         public async Task<BaseAPIResponse> GetAllCategory([FromQuery] CategoryRequestDTO request)
         {
             return await _categoryService.GetAllCategory(request);
@@ -42,7 +40,6 @@ namespace WebBuySource.Controllers
         /// <remarks>Requires Admin role. Returns the created category information.</remarks>
         [HttpPost]
         [Authorize(Roles = "Admin")]
-
         /// <summary>
         /// Retrieve all categories (with pagination).
         /// </summary>
@@ -61,7 +58,6 @@ namespace WebBuySource.Controllers
         /// </summary>
         /// <remarks>Requires Admin role. Updates category information by ID.</remarks>
         [HttpPut]
-
         /// <summary>
         /// Retrieve all categories (with pagination).
         /// </summary>
@@ -81,7 +77,6 @@ namespace WebBuySource.Controllers
         /// <remarks>Requires Admin role. Permanently removes the category.</remarks>
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
-
         /// <summary>
         /// Retrieve all categories (with pagination).
         /// </summary>
@@ -96,3 +91,4 @@ namespace WebBuySource.Controllers
         }
     }
 }
+
