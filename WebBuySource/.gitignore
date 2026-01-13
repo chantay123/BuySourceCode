@@ -1,0 +1,64 @@
+﻿wwwroot/
+log.txt
+logs/
+.env
+.json
+
+# Build results
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+[Ll]ogs/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio cache/options
+.vs/
+.vscode/
+
+# Rider (JetBrains IDE)
+.idea/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+*.nuget.props
+*.nuget.targets
+
+# DotCover, Resharper, Rider
+_ReSharper*/
+*.DotSettings.user
+*.sln.iml
+
+# Test results
+TestResult*/
+*.trx
+*.coverage
+*.coveragexml
+
+# Entity Framework Core
+*Migrations/obj/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Others
+*.log
+*.tlog
+*.cache
+*.pdb
+*.mdb
+
+# Local secrets & configs
+appsettings.Development.json
+secrets.json
+
+# OS generated
+[Dd]esktop.ini
+[Tt]humbs.db
