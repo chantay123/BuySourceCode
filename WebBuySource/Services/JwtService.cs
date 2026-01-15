@@ -216,7 +216,6 @@ namespace WebBuySource.Services
             
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Username),
                 new Claim("id", user.Id.ToString()),
                 new Claim("name", user.Fullname ?? string.Empty),
                 new Claim ("email",user.Email.ToString()),
