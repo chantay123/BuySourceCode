@@ -46,14 +46,12 @@ namespace WebBuySource.Uow
         /// </summary>
         private IRepository<Role>? _RoleRepository;
 
-        public IRepository<Role> RoleRepository =>
-            _RoleRepository ??= new Repository<Role>(_dbContext);
+        public IRepository<Role> RoleRepository => _RoleRepository ??= new Repository<Role>(_dbContext);
 
         /// <summary>
         /// Repository of table Code 
         /// </summary>
         private IRepository<Code>? _CodeRepository;
-
         public IRepository<Code> CodeRepository => _CodeRepository ??= new Repository<Code>(_dbContext);
 
 
@@ -88,6 +86,28 @@ namespace WebBuySource.Uow
         /// </summary>
         private IRepository<Tag>? _TagRepository;
         public IRepository<Tag> TagRepository => _TagRepository ??= new Repository<Tag>(_dbContext);
+
+
+        /// <summary>
+        /// Repository of table comment
+        /// </summary>
+        private IRepository<Comment>? _CommentRepository;
+        public IRepository<Comment> CommentRepository => _CommentRepository ??= new Repository<Comment>(_dbContext);
+
+        /// <summary>
+        /// Repository of table ProgrammingLanguage
+        /// </summary>
+        private IRepository<ProgrammingLanguage>? _ProgrammingLanguage;
+        public IRepository<ProgrammingLanguage> ProgrammingLanguageRepository => _ProgrammingLanguage ??= new Repository<ProgrammingLanguage>(_dbContext);
+
+
+        /// <summary>
+        /// Repository of table  Transaction
+        /// </summary>
+        private IRepository<Transaction>? _Transaction;
+        public IRepository<Transaction> TransactionRepository => _Transaction ??= new Repository<Transaction>(_dbContext);
+
+
 
         #region Constructor
 

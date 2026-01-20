@@ -13,10 +13,7 @@ using WebBuySource.Services;
 using WebBuySource.Uow;
 
 
-
-
 var builder = WebApplication.CreateBuilder(args);
-
 
 Env.Load();
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
@@ -51,7 +48,8 @@ builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddTransient<ICodeService, CodeService>();
 builder.Services.AddTransient<ICodeFileService, CodeFileService>();
 builder.Services.AddTransient<IPermissionService, PermissionService>();
-
+builder.Services.AddTransient<IProgrammingLanguageService, ProgrammingLanguageService>();
+builder.Services.AddTransient<ICommentService, CommentService>();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -70,7 +68,7 @@ var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
 
 // Add JWT Authentication
 var clientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
-Console.WriteLine("ClientId = " + clientId);
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -136,7 +134,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter 'Bearer' followed by your JWT token. Example: Bearer eyJhbGciOiJIUzI1NiIs..."
+        Description = "Enter 'Bearer' followed by your JWT token. Example: Bearer "
     });
 
     //  Require JWT globally (optional)
