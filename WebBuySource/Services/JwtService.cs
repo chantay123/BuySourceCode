@@ -15,7 +15,7 @@ using WebBuySource.Models;
 using WebBuySource.Models.Enums;
 using WebBuySource.Utilities;
 using WebBuySource.Utilities.Constants;
-using static System.Net.WebRequestMethods;
+
 
 namespace WebBuySource.Services
 {
@@ -442,7 +442,6 @@ namespace WebBuySource.Services
             "https://www.googleapis.com/oauth2/v2/userinfo");
 
         var profile = JsonDocument.Parse(profileJson).RootElement;
-
         var email = profile.GetProperty("email").GetString()!;
         var name = profile.GetProperty("name").GetString()!;
         var googleId = profile.GetProperty("id").GetString()!;

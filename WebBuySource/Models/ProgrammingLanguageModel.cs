@@ -15,7 +15,7 @@ namespace WebBuySource.Models
         
         public string? Code { get; set; }
 
-        public bool? isActive { get; set; }
+        public bool? IsActive { get; set; }
 
 
         public ICollection<Code> Codes { get; set; }

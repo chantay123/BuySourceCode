@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Transactions;
 using WebBuySource.Models.Enums;
-using TransactionStatus = System.Transactions.TransactionStatus;
 
 namespace WebBuySource.Models
 {
