@@ -36,8 +36,7 @@ namespace WebBuySource.Services
             if (code == null)
                 return BaseApiResponse.NotFound("Code not found");
 
-            var transaction = await TransactionRepository.FirstOrDefaultAsync(t => t.BuyerId == userId && t.CodeId == request.CodeId &&t.Status == TransactionStatus.COMPLETED
-                                                                    );
+            var transaction = await TransactionRepository.FirstOrDefaultAsync(t => t.BuyerId == userId && t.CodeId == request.CodeId &&t.Status == TransactionStatus.COMPLETED);
 
             if (transaction == null)
                 return BaseApiResponse.Error("You must purchase this code before commenting");

@@ -4,12 +4,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace WebBuySource.Migrations
 {
     /// <inheritdoc />
-    public partial class first : Migration
+    public partial class addcodelike : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,7 +20,8 @@ namespace WebBuySource.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
-                    ParentId = table.Column<int>(type: "integer", nullable: true)
+                    ParentId = table.Column<int>(type: "integer", nullable: true),
+                    ImageUrl = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -66,7 +65,7 @@ namespace WebBuySource.Migrations
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     Code = table.Column<string>(type: "text", nullable: true),
-                    isActive = table.Column<bool>(type: "boolean", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: true),
                     CreatedById = table.Column<int>(type: "integer", nullable: true),
                     UpdatedById = table.Column<int>(type: "integer", nullable: true),
                     DeletedById = table.Column<int>(type: "integer", nullable: true),
@@ -101,6 +100,27 @@ namespace WebBuySource.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tags",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Slug = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    CreatedById = table.Column<int>(type: "integer", nullable: true),
+                    UpdatedById = table.Column<int>(type: "integer", nullable: true),
+                    DeletedById = table.Column<int>(type: "integer", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tags", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RolePermissions",
                 columns: table => new
                 {
@@ -131,10 +151,10 @@ namespace WebBuySource.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Username = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Fullname = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    Username = table.Column<string>(type: "text", nullable: false),
+                    Fullname = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
+                    Password = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     PhoneNumber = table.Column<string>(type: "text", nullable: true),
                     Gender = table.Column<string>(type: "text", nullable: true),
                     Avatar = table.Column<string>(type: "text", nullable: true),
@@ -340,40 +360,6 @@ namespace WebBuySource.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tags",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    CreatedById = table.Column<int>(type: "integer", nullable: true),
-                    UpdatedById = table.Column<int>(type: "integer", nullable: true),
-                    DeletedById = table.Column<int>(type: "integer", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tags", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Tags_Users_CreatedById",
-                        column: x => x.CreatedById,
-                        principalTable: "Users",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Tags_Users_DeletedById",
-                        column: x => x.DeletedById,
-                        principalTable: "Users",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Tags_Users_UpdatedById",
-                        column: x => x.UpdatedById,
-                        principalTable: "Users",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "RefreshTokens",
                 columns: table => new
                 {
@@ -383,7 +369,14 @@ namespace WebBuySource.Migrations
                     ExpiresAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     RevokedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     UserId = table.Column<int>(type: "integer", nullable: false),
-                    DeviceId = table.Column<int>(type: "integer", nullable: true)
+                    DeviceId = table.Column<int>(type: "integer", nullable: true),
+                    UserId1 = table.Column<int>(type: "integer", nullable: true),
+                    CreatedById = table.Column<int>(type: "integer", nullable: true),
+                    UpdatedById = table.Column<int>(type: "integer", nullable: true),
+                    DeletedById = table.Column<int>(type: "integer", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -399,6 +392,11 @@ namespace WebBuySource.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RefreshTokens_Users_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -468,6 +466,26 @@ namespace WebBuySource.Migrations
                         column: x => x.UploadedById,
                         principalTable: "Users",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CodeLikes",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    CodeId = table.Column<int>(type: "integer", nullable: false),
+                    DateLastMant = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CodeLikes", x => new { x.UserId, x.CodeId });
+                    table.ForeignKey(
+                        name: "FK_CodeLikes_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -851,15 +869,6 @@ namespace WebBuySource.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Roles",
-                columns: new[] { "Id", "CreatedAt", "CreatedById", "DeletedAt", "DeletedById", "Description", "IsSystem", "Name", "UpdatedAt", "UpdatedById" },
-                values: new object[,]
-                {
-                    { 1, new DateTime(2025, 9, 29, 7, 4, 10, 224, DateTimeKind.Utc).AddTicks(5001), null, null, null, "Regular system user", false, "User", null, null },
-                    { 2, new DateTime(2025, 9, 29, 7, 4, 10, 224, DateTimeKind.Utc).AddTicks(5004), null, null, null, "Administrator with delegated permissions", false, "Admin", null, null }
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AuditLogs_UserId",
                 table: "AuditLogs",
@@ -889,6 +898,11 @@ namespace WebBuySource.Migrations
                 name: "IX_CodeFiles_UploadedById",
                 table: "CodeFiles",
                 column: "UploadedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CodeLikes_CodeId",
+                table: "CodeLikes",
+                column: "CodeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CodePromotions_PromotionId",
@@ -1043,6 +1057,12 @@ namespace WebBuySource.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_UserId1",
+                table: "RefreshTokens",
+                column: "UserId1",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Reports_CodeId",
                 table: "Reports",
                 column: "CodeId");
@@ -1061,21 +1081,6 @@ namespace WebBuySource.Migrations
                 name: "IX_RolePermissions_PermissionId",
                 table: "RolePermissions",
                 column: "PermissionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tags_CreatedById",
-                table: "Tags",
-                column: "CreatedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tags_DeletedById",
-                table: "Tags",
-                column: "DeletedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tags_UpdatedById",
-                table: "Tags",
-                column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_BuyerId",
@@ -1115,6 +1120,14 @@ namespace WebBuySource.Migrations
             migrationBuilder.AddForeignKey(
                 name: "FK_CodeFiles_Codes_CodeId",
                 table: "CodeFiles",
+                column: "CodeId",
+                principalTable: "Codes",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CodeLikes_Codes_CodeId",
+                table: "CodeLikes",
                 column: "CodeId",
                 principalTable: "Codes",
                 principalColumn: "Id",
@@ -1169,6 +1182,9 @@ namespace WebBuySource.Migrations
 
             migrationBuilder.DropTable(
                 name: "CodeFiles");
+
+            migrationBuilder.DropTable(
+                name: "CodeLikes");
 
             migrationBuilder.DropTable(
                 name: "CodeTags");

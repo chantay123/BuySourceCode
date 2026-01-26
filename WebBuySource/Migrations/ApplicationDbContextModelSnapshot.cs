@@ -255,6 +255,27 @@ namespace WebBuySource.Migrations
                     b.ToTable("CodeFiles");
                 });
 
+            modelBuilder.Entity("WebBuySource.Models.CodeLike", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CodeId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DateLastMant")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("UserId", "CodeId");
+
+                    b.HasIndex("CodeId");
+
+                    b.ToTable("CodeLikes");
+                });
+
             modelBuilder.Entity("WebBuySource.Models.CodePromotion", b =>
                 {
                     b.Property<int>("CodeId")
@@ -683,6 +704,9 @@ namespace WebBuySource.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
+                    b.Property<bool?>("IsActive")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -693,9 +717,6 @@ namespace WebBuySource.Migrations
 
                     b.Property<int?>("UpdatedById")
                         .HasColumnType("integer");
-
-                    b.Property<bool?>("isActive")
-                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
@@ -955,10 +976,16 @@ namespace WebBuySource.Migrations
                     b.Property<int?>("DeletedById")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Slug")
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -967,12 +994,6 @@ namespace WebBuySource.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("DeletedById");
-
-                    b.HasIndex("UpdatedById");
 
                     b.ToTable("Tags");
                 });
@@ -1367,6 +1388,25 @@ namespace WebBuySource.Migrations
                     b.Navigation("UploadedBy");
                 });
 
+            modelBuilder.Entity("WebBuySource.Models.CodeLike", b =>
+                {
+                    b.HasOne("WebBuySource.Models.Code", "Code")
+                        .WithMany("CodeLikes")
+                        .HasForeignKey("CodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebBuySource.Models.User", "User")
+                        .WithMany("CodeLikes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Code");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("WebBuySource.Models.CodePromotion", b =>
                 {
                     b.HasOne("WebBuySource.Models.Code", "Code")
@@ -1624,27 +1664,6 @@ namespace WebBuySource.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("WebBuySource.Models.Tag", b =>
-                {
-                    b.HasOne("WebBuySource.Models.User", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("WebBuySource.Models.User", "DeletedBy")
-                        .WithMany()
-                        .HasForeignKey("DeletedById");
-
-                    b.HasOne("WebBuySource.Models.User", "UpdatedBy")
-                        .WithMany()
-                        .HasForeignKey("UpdatedById");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("DeletedBy");
-
-                    b.Navigation("UpdatedBy");
-                });
-
             modelBuilder.Entity("WebBuySource.Models.Transaction", b =>
                 {
                     b.HasOne("WebBuySource.Models.User", "Buyer")
@@ -1735,6 +1754,8 @@ namespace WebBuySource.Migrations
                 {
                     b.Navigation("CodeFiles");
 
+                    b.Navigation("CodeLikes");
+
                     b.Navigation("CodePromotions");
 
                     b.Navigation("CodeTags");
@@ -1802,6 +1823,8 @@ namespace WebBuySource.Migrations
             modelBuilder.Entity("WebBuySource.Models.User", b =>
                 {
                     b.Navigation("AuditLogs");
+
+                    b.Navigation("CodeLikes");
 
                     b.Navigation("Codes");
 

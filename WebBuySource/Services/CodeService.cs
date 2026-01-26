@@ -13,6 +13,10 @@ namespace WebBuySource.Services
     {
         #region Repository
         private IRepository<Code> CodeRepository => UnitOfWork.CodeRepository;
+
+        private IRepository<User> UserRepository => UnitOfWork.UserRepository;
+
+        private IRepository<ProgrammingLanguage> ProgrammingLanguageRepository => UnitOfWork.ProgrammingLanguageRepository;
         #endregion
         public CodeService(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
@@ -25,19 +29,26 @@ namespace WebBuySource.Services
         {
             var items = await CodeRepository
                 .GetAllAsNoTracking()
-                .Select(c => new CodeResponse
+                .Select(x => new CodeResponse
                 {
-                    Id = c.Id,
-                    Title = c.Title,
-                    Description = c.Description ?? string.Empty,
-                    Price = c.Price,
-                    Currency = c.Currency,
-                    DemoUrl = c.DemoUrl,
-                    ThumbnailUrl = c.ThumbnailUrl,
-                    Status = c.Status,
-                    Views = c.Views,
-                    Downloads = c.Downloads,
-                    AvgRating = c.AvgRating
+                    Id = x.Id,
+                    Title = x.Title,
+                    Description = x.Description,
+                    Price = x.Price,
+                    Currency = x.Currency,
+                    DemoUrl = x.DemoUrl,
+                    PreviewImage = x.PreviewImage,
+                    ThumbnailUrl = x.ThumbnailUrl,
+                    Status = x.Status.ToString(),
+                    Views = x.Views,
+                    Downloads = x.Downloads,
+                    AvgRating = x.AvgRating,
+                    IsFeatured = x.IsFeatured,
+                    LicenseType = x.LicenseType.ToString(),
+
+                    SellerId = x.SellerId,
+                    CategoryId = x.CategoryId,
+                    ProgrammingLanguageId = x.ProgrammingLanguageId
                 }).ToListAsync();
 
             return BaseApiResponse.OK(items);

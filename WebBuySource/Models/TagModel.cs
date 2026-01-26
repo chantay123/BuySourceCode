@@ -9,11 +9,11 @@ namespace WebBuySource.Models
 
         [Required, MaxLength(100)]
         public string Name { get; set; }
-        public User? CreatedBy { get; set; }
-        public User? UpdatedBy { get; set; }
-        public User? DeletedBy { get; set; }
 
- 
+        public string? Slug { get; set; }
+
+        public string? Description { get; set; }
+
         public ICollection<CodeTag> CodeTags { get; set; }
     }
 }
