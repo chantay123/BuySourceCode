@@ -49,5 +49,7 @@ namespace WebBuySource.Models
         public ICollection<Transaction> Transactions { get; set; }
 
         public ICollection<CodePromotion > CodePromotions { get; set; }
+
+        public ICollection<CodeLike> CodeLikes { get; set; }
     }
 }
