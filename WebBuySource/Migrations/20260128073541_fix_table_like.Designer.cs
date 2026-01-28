@@ -12,8 +12,8 @@ using WebBuySource.Data;
 namespace WebBuySource.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260125081703_add-code-like")]
-    partial class addcodelike
+    [Migration("20260128073541_fix_table_like")]
+    partial class fix_table_like
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -261,10 +261,12 @@ namespace WebBuySource.Migrations
             modelBuilder.Entity("WebBuySource.Models.CodeLike", b =>
                 {
                     b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnOrder(0);
 
                     b.Property<int>("CodeId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnOrder(1);
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");

@@ -23,6 +23,8 @@ namespace WebBuySource.Dto.Request.Code
         [Url(ErrorMessage = "Invalid ThumbnailUrl format.")]
         public string? ThumbnailUrl { get; set; }
 
+        public string? PreviewImage { get; set; }
+
         [Required(ErrorMessage = "SellerId is required.")]
         [Range(1, int.MaxValue, ErrorMessage = "SellerId must be > 0.")]
         public int SellerId { get; set; }

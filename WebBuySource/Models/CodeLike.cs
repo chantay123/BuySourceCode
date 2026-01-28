@@ -1,8 +1,13 @@
-﻿namespace WebBuySource.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace WebBuySource.Models
 {
     public class CodeLike
     {
+     
         public int UserId { get; set; }
+
         public int CodeId { get; set; }
 
         public User User { get; set; } = null!;
