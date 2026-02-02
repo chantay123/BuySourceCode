@@ -40,5 +40,21 @@ namespace WebBuySource.Interfaces
         /// <param name="id"></param>
         /// <returns></returns>
         Task<BaseAPIResponse> DeleteCode(int id);
+
+        /// <summary>
+        /// like code
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="codeId"></param>
+        /// <returns></returns>
+        Task<BaseAPIResponse> LikeCode(int userId, int codeId);
+
+        /// <summary>
+        /// unlike code 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="codeId"></param>
+        /// <returns></returns>
+        Task<BaseAPIResponse> UnlikeCode(int userId, int codeId);
     }
 }

@@ -12,7 +12,7 @@ namespace WebBuySource.Data.Seed
             builder.HasData(
                new Role
                {
-                   Id = 13,
+                   Id = 1,
                    Name = "User",
                    Description = "Regular system user",
                    CreatedAt = new DateTime(2025, 09, 29, 0, 0, 0, DateTimeKind.Utc),
@@ -20,7 +20,7 @@ namespace WebBuySource.Data.Seed
                },
                new Role
                {
-                   Id = 14,
+                   Id = 2,
                    Name = "Admin",
                    Description = "Administrator with delegated permissions",
                    CreatedAt = new DateTime(2025, 09, 29, 0, 0, 0, DateTimeKind.Utc),

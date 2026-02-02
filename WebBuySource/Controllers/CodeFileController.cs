@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WebBuySource.Dto.Request.CodeFile;
 using WebBuySource.Dto.Response;
 using WebBuySource.Interfaces;
@@ -47,6 +48,7 @@ namespace WebBuySource.Controllers
         /// <response code="200">File created successfully.</response>
         /// <response code="400">Invalid data.</response>
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<BaseAPIResponse> CreateFile([FromBody] CreateCodeFileDTO input)
         {
             return await _codeFileService.CreateFile(input);
@@ -63,6 +65,7 @@ namespace WebBuySource.Controllers
         /// <response code="200">Updated successfully.</response>
         /// <response code="404">File not found.</response>
         [HttpPut("{fileId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<BaseAPIResponse> UpdateFile(int fileId, [FromBody] UpdateCodeFileDTO request)
         {
             return await _codeFileService.UpdateFile(fileId, request);
@@ -78,6 +81,7 @@ namespace WebBuySource.Controllers
         /// <response code="200">File deleted successfully.</response>
         /// <response code="404">File not found.</response>
         [HttpDelete("{fileId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<BaseAPIResponse> DeleteFile(int fileId)
         {
             return await _codeFileService.DeleteFile(fileId);

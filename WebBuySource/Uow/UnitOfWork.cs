@@ -108,6 +108,11 @@ namespace WebBuySource.Uow
         public IRepository<Transaction> TransactionRepository => _Transaction ??= new Repository<Transaction>(_dbContext);
 
 
+        /// <summary>
+        /// Repository of table  CodeLike
+        /// </summary>
+        private IRepository<CodeLike>? _CodeLike;
+        public IRepository<CodeLike> CodeLikeRepository => _CodeLike ??= new Repository<CodeLike>(_dbContext);
 
         #region Constructor
 

@@ -8,8 +8,7 @@ namespace WebBuySource.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options) { }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base(options) { }
 
         // DbSets
         public DbSet<User> Users { get; set; }
@@ -37,10 +36,8 @@ namespace WebBuySource.Data
         public DbSet<Report> Reports { get; set; }
         public DbSet<UserFavorites> UserFavorites { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Device> Devices { get; set; }
         public DbSet<CodeLike> CodeLikes { get; set; }
-
-        public DbSet<Device> Devices { get; set; }  
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -285,13 +282,11 @@ namespace WebBuySource.Data
                 .WithMany(c => c.Favorites)
                 .HasForeignKey(uf => uf.CodeId);
 
-
             ////Notification
             modelBuilder.Entity<Notification>()
                 .HasOne(n => n.User)
                 .WithMany(u => u.Notifications)
                 .HasForeignKey(n => n.UserId);
-
 
             //// DEVICE
             modelBuilder.Entity<Device>(entity =>
@@ -308,12 +303,10 @@ namespace WebBuySource.Data
             modelBuilder.Entity<CodeLike>(entity =>
             {
                 entity.HasKey(x => new { x.UserId, x.CodeId });
-
                 entity.HasOne(x => x.User)
                       .WithMany(u => u.CodeLikes)
                       .HasForeignKey(x => x.UserId)
                       .OnDelete(DeleteBehavior.Cascade);
-
                 entity.HasOne(x => x.Code)
                       .WithMany(c => c.CodeLikes)
                       .HasForeignKey(x => x.CodeId)
@@ -322,8 +315,7 @@ namespace WebBuySource.Data
                 entity.Property(x => x.DateLastMant)
                       .IsRequired(false);
             });
-            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-
+           // modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
         }
     }

@@ -10,7 +10,7 @@ namespace WebBuySource.Data.Seed
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
- 
+            
             Env.Load(); 
             var adminEmail = Environment.GetEnvironmentVariable("ADMIN_EMAIL") ?? "admin@example.com";
             var adminPasswordRaw = Environment.GetEnvironmentVariable("ADMIN_PASSWORD") ?? "Admin@123";
@@ -25,14 +25,14 @@ namespace WebBuySource.Data.Seed
                 {
                     Id = 1,
                     Username = "admin",
-                    Fullname = "c",
+                    Fullname = "Administrator",
                     Email = adminEmail,
                     Password = adminPassword,
                     PhoneNumber = "0123456789",
                     Gender = Gender.Male,
                     TotpEnabled = false,
                     Timezone = "Asia/Ho_Chi_Minh",
-                    RoleId = 2, // Admin role ID bạn seed ở trên
+                    RoleId = 2, // Admin role 
                     Status = UserStatus.ACTIVE,
                     IsVerified = true,
                     Balance = 0.00m,

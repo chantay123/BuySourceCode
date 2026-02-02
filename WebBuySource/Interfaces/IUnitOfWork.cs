@@ -21,7 +21,7 @@ namespace WebBuySource.Interfaces
 
         IRepository<Transaction> TransactionRepository { get; }
 
-
+        IRepository<CodeLike> CodeLikeRepository { get; }
 
 
 
