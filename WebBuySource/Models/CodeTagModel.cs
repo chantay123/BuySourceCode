@@ -14,5 +14,8 @@ namespace WebBuySource.Models
         [Required]
         public int TagId { get; set; }
         public Tag Tag { get; set; }
+
+        public ICollection<Tag> Tags { get; set; }
+        public ICollection<Code> Codes { get; set; }
     }
 }

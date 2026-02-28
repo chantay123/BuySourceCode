@@ -26,9 +26,11 @@ namespace WebBuySource.Services
         {
         }
 
-        /// <summary>
-        /// Get all codes
-        /// </summary>
+       /// <summary>
+       /// getallcode
+       /// </summary>
+       /// <param name="request"></param>
+       /// <returns></returns>
         public async Task<BaseAPIResponse> GetAllCodes(CodeRequestDTO request)
         {
             var items = await CodeRepository
@@ -49,7 +51,6 @@ namespace WebBuySource.Services
                     AvgRating = x.AvgRating,
                     IsFeatured = x.IsFeatured,
                     LicenseType = x.LicenseType.ToString(),
-
                     SellerId = x.SellerId,
                     CategoryId = x.CategoryId,
                     ProgrammingLanguageId = x.ProgrammingLanguageId
@@ -58,6 +59,11 @@ namespace WebBuySource.Services
             return BaseApiResponse.OK(items);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<BaseAPIResponse> GetCodeById(int id)
         {
             var code = await CodeRepository.GetAllAsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
@@ -241,6 +247,7 @@ namespace WebBuySource.Services
                 UserId = userId,
                 CodeId = codeId,
                 CreatedAt = DateTime.UtcNow
+                
             };
 
             await CodeLikeRepository.AddAsync(like);

@@ -4,7 +4,6 @@ using WebBuySource.Dto.Response;
 using WebBuySource.Dto.Response.JWTResponse;
 using WebBuySource.Interfaces;
 using WebBuySource.Models;
-using WebBuySource.Uow;
 using WebBuySource.Utilities;
 using WebBuySource.Utilities.Constants;
 
@@ -135,8 +134,7 @@ namespace WebBuySource.Services
         /// <returns>Success message if deleted; NotFound if user does not exist.</returns>
         public async Task<BaseAPIResponse> DeleteUser(int id)
         {
-            var user = await UserRepository.GetAll()
-                .FirstOrDefaultAsync(u => u.Id == id);
+            var user = await UserRepository.GetAll().FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null)
                 return BaseApiResponse.NotFound(MessageConstants.USER_NOT_FOUND);

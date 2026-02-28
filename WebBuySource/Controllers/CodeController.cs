@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebBuySource.Dto.Request.Code;
 using WebBuySource.Dto.Response;
 using WebBuySource.Interfaces;
-using WebBuySource.Models;
+
 
 namespace WebBuySource.Controllers
 {
@@ -61,7 +61,7 @@ namespace WebBuySource.Controllers
         /// Note: ID is taken from the URL, not from the body.
         /// </summary>
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")  ]
         public async Task<BaseAPIResponse> UpdateCode(int id, [FromBody] UpdateCodeDTO dto)
         {
 

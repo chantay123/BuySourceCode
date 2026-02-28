@@ -67,22 +67,19 @@ namespace WebBuySource.Services
         public async Task<BaseAPIResponse> CreatecCodeTag(CreateCodeTagDTO input)
         {
             // Validate Code
-            var codeExists = await CodeRepository.GetAllAsNoTracking()
-                .AnyAsync(x => x.Id == input.CodeId);
+            var codeExists = await CodeRepository.GetAllAsNoTracking().AnyAsync(x => x.Id == input.CodeId);
 
             if (!codeExists)
                 return BaseApiResponse.NotFound("Code does not exist.");
 
             // Validate Tag
-            var tagExists = await TagRepository.GetAllAsNoTracking()
-                .AnyAsync(x => x.Id == input.TagId);
+            var tagExists = await TagRepository.GetAllAsNoTracking().AnyAsync(x => x.Id == input.TagId);
 
             if (!tagExists)
                 return BaseApiResponse.NotFound("Tag does not exist.");
 
             // Check duplicate
-            var exists = await CodeTagRepository.GetAllAsNoTracking()
-                .AnyAsync(x => x.CodeId == input.CodeId && x.TagId == input.TagId);
+            var exists = await CodeTagRepository.GetAllAsNoTracking().AnyAsync(x => x.CodeId == input.CodeId && x.TagId == input.TagId);
 
             if (exists)
                 return BaseApiResponse.NotFound("This Code already has this Tag.");
