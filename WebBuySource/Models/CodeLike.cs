@@ -5,7 +5,7 @@ namespace WebBuySource.Models
 {
     public class CodeLike
     {
-     
+        public int id { get; set; }
         public int UserId { get; set; }
 
         public int CodeId { get; set; }

@@ -2,6 +2,7 @@
 using WebBuySource.Dto.Request.users;
 using WebBuySource.Dto.Response;
 using WebBuySource.Dto.Response.JWTResponse;
+using WebBuySource.Dto.Response.usersResponse;
 using WebBuySource.Interfaces;
 using WebBuySource.Models;
 using WebBuySource.Utilities;
@@ -16,6 +17,10 @@ namespace WebBuySource.Services
     public class UserService : BaseService, IUserService
     {
         private IRepository<User> UserRepository => UnitOfWork.UserRepository;
+
+        private IRepository<Code> CodeRepository => UnitOfWork.CodeRepository;
+
+        private IRepository<CodeLike> CodeLikeRepository => UnitOfWork.CodeLikeRepository;
 
         public UserService(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
@@ -143,6 +148,28 @@ namespace WebBuySource.Services
             await UserRepository.SaveChangesAsync();
 
             return BaseApiResponse.OK(MessageConstants.USER_DELETED_SUCCESS);
+        }
+
+        public async Task<BaseAPIResponse> GetFavoriteUsers(int id)
+        {
+
+            var userExists = await UserRepository.GetAllAsNoTracking().AnyAsync(u => u.Id == id);
+
+            if (!userExists)
+                return BaseApiResponse.NotFound(MessageConstants.USER_NOT_FOUND);
+
+            var userFavorites = await CodeLikeRepository.GetAll().Where(x => x.UserId == id).Join(CodeRepository.GetAllAsNoTracking(),x => x.CodeId, y => y.Id,(x,y) => new UserFavoriteResponse
+            {
+                CodeId = y.Id,
+                Name = x.User.Fullname,     
+                Price = y.Price,
+                Description = y.Description,
+                ThumbnailUrl = y.ThumbnailUrl,
+                IsLiked = true
+            }).ToListAsync();
+
+
+            return BaseApiResponse.OK(userFavorites);
         }
     }
 }

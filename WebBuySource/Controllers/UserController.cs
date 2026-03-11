@@ -109,5 +109,19 @@ namespace WebBuySource.Controllers
         {
             return await _userService.DeleteUser(id);
         }
+        /// <summary>
+        /// Get favorite codes of a user by ID.
+        /// </summary>
+        /// <param name="id">User ID.</param>
+        /// <returns>List of favorite codes.</returns>
+        /// <response code="200">Return favorite list successfully.</response>
+        /// <response code="404">User not found.</response>
+        /// <response code="500">Internal server error.</response>
+        [HttpGet("{id}/favorites")]
+        public async Task<BaseAPIResponse> GetFavoriteUsers(int id)
+        {
+            return await _userService.GetFavoriteUsers(id);
+        }
+
     }
 }

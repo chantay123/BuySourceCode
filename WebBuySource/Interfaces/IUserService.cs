@@ -14,5 +14,8 @@ namespace WebBuySource.Interfaces
 
         Task<BaseAPIResponse> DeleteUser(int id);
 
+
+        Task<BaseAPIResponse> GetFavoriteUsers(int id); 
+
     }
 }
