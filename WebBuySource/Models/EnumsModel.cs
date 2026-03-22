@@ -20,6 +20,6 @@
 
     public enum TransactionType
     {
-        PENDING, COMPLETED, FAILED,
-    }
+        PENDING, COMPLETED, FAILED, PURCHASE, DEPOSIT, WITHDRAWAL, REFUND
+	}
 }

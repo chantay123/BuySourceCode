@@ -62,6 +62,7 @@ namespace WebBuySource.Models
         public ICollection<Code> Codes { get; set; }
         public ICollection<RefreshToken> RefreshTokens { get; set; }
         public virtual ICollection<Device> Devices { get; set; }
-        public ICollection<CodeLike> CodeLikes { get; set; } 
-    }
+        public ICollection<CodeLike> CodeLikes { get; set; }
+		public ICollection<Cart> Carts { get; set; }
+	}
 }

@@ -4,12 +4,13 @@ namespace WebBuySource.Interfaces
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        #region Add entity to database.
-        /// <summary>
-        /// Add entity to database.
-        /// </summary>
-        /// <param name="obj">Entity.</param>
-        void Add(TEntity obj);
+
+		#region Add entity to database.
+		/// <summary>
+		/// Add entity to database.
+		/// </summary>
+		/// <param name="obj">Entity.</param>
+		void Add(TEntity obj);
         /// <summary>
         /// Add entity to database async.
         /// </summary>

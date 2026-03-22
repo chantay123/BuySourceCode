@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections;
 using WebBuySource.Data;
 using WebBuySource.Interfaces;
 using WebBuySource.Models;
@@ -9,10 +10,13 @@ namespace WebBuySource.Uow
     {
         private readonly DbContext _dbContext;
 
-        /// <summary>
-        /// Repository of table Category
-        /// </summary>
-        private IRepository<Category>? _CategoryRepository;
+		private readonly ApplicationDbContext _context;
+		private Hashtable _repositories;
+
+		/// <summary>
+		/// Repository of table Category
+		/// </summary>
+		private IRepository<Category>? _CategoryRepository;
 
         public IRepository<Category> CategoryRepository =>
             _CategoryRepository ??= new Repository<Category>(_dbContext);
@@ -127,12 +131,25 @@ namespace WebBuySource.Uow
         {
             return _dbContext.SaveChanges() > 0;
         }
-        #endregion
+		#endregion
 
-        public void Dispose()
+		/// <summary>
+		/// Repository of table Cart
+		/// </summary>
+		private IRepository<Cart>? _CartRepository;
+		public IRepository<Cart> CartRepository => _CartRepository ??= new Repository<Cart>(_dbContext);
+
+		/// <summary>
+		/// Repository of table Download
+		/// </summary>
+		private IRepository<Download>? _DownloadRepository;
+		public IRepository<Download> DownloadRepository =>
+			_DownloadRepository ??= new Repository<Download>(_dbContext);
+
+		public void Dispose()
         {
             _dbContext.Dispose();
             GC.SuppressFinalize(this);
-        }
+		}
     }
 }

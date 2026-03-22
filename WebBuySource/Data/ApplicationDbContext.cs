@@ -38,12 +38,35 @@ namespace WebBuySource.Data
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Device> Devices { get; set; }
         public DbSet<CodeLike> CodeLikes { get; set; }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+		public DbSet<Cart> Carts { get; set; }
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // ===== ENUM CONVERSIONS =====
-            modelBuilder.Entity<User>()
+			// CART relationships
+			modelBuilder.Entity<Cart>()
+				.HasOne(c => c.User)
+				.WithMany(u => u.Carts)
+				.HasForeignKey(c => c.UserId)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			modelBuilder.Entity<Cart>()
+				.HasOne(c => c.Code)
+				.WithMany(c => c.Carts)
+				.HasForeignKey(c => c.CodeId)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			// Index để tối ưu query
+			modelBuilder.Entity<Cart>()
+				.HasIndex(c => new { c.UserId, c.CodeId })
+				.HasFilter("[DeletedAt] IS NULL")
+				.IsUnique();
+
+			modelBuilder.Entity<Cart>()
+				.HasIndex(c => c.ExpiredAt);
+
+			// ===== ENUM CONVERSIONS =====
+			modelBuilder.Entity<User>()
                 .Property(u => u.Gender)
                 .HasConversion<string>();
 

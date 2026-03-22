@@ -18,13 +18,10 @@ namespace WebBuySource.Interfaces
         IRepository<Tag> TagRepository { get; }
         IRepository<Comment> CommentRepository { get; }
         IRepository<ProgrammingLanguage> ProgrammingLanguageRepository { get; }
-
         IRepository<Transaction> TransactionRepository { get; }
-
         IRepository<CodeLike> CodeLikeRepository { get; }
-
-
-
-        bool Commit();
+		IRepository<Cart> CartRepository { get; }
+		IRepository<Download> DownloadRepository { get; }
+		bool Commit();
     }
 }

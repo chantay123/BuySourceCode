@@ -8,11 +8,13 @@ namespace WebBuySource.Data
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
-        #region Define
-        /// <summary>
-        /// The database context.
-        /// </summary>
-        protected readonly DbContext Db;
+		private readonly ApplicationDbContext _context;
+
+		#region Define
+		/// <summary>
+		/// The database context.
+		/// </summary>
+		protected readonly DbContext Db;
         /// <summary>
         /// DbSet of the entity.
         /// </summary>

@@ -51,5 +51,7 @@ namespace WebBuySource.Models
         public ICollection<CodePromotion > CodePromotions { get; set; }
 
         public ICollection<CodeLike> CodeLikes { get; set; }
-    }
+
+		public ICollection<Cart> Carts { get; set; }
+	}
 }
